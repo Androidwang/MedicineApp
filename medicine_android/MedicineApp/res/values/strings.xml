@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">医疗用药</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+
+    <!-- 日期时间选择控件 -->
+    <string name="calendar_bt_sure">确认</string>
+    <string name="calendar_bt_cancel">取消</string>
+
+    <!-- 主界面 tab 名字 -->
+    <string name="home_tab_usemedicine_name">用药</string>
+    <string name="home_tab_history_name">历史</string>
+    <string name="home_tab_knowledge_name">知识</string>
+    <string name="home_tab_myinfo_name">我的</string>
+
+    <!-- 时间效验界面 -->
+    <string name="timevalidation_title_name">时钟效准</string>
+    <string name="timevalidation_bt_setdate">设置日期</string>
+    <string name="timevalidation_bt_settime">设置时间</string>
+
+    <!-- 用户输入信息界面 -->
+    <string name="userinfo_tv_name">姓名：</string>
+    <string name="userinfo_tv_phone">联系电话：</string>
+    <string name="userinfo_tv_birthdate">出生年月：</string>
+    <string name="userinfo_tv_address">住址：</string>
+    <string name="userinfo_tv_accredit">授权ID：</string>
+    <string name="userinfo_tv_medicalhistory">病史：</string>
+    <string name="userinfo_tv_introductions">病史详细说明：</string>
+    <string name="userinfo_tv_tag1">的内容属于必填项。本页面一旦填写完成后，除姓名不可修改外，</string>
+    <string name="userinfo_tv_tag2">其他内容可在进入主页后 “我的” 选项中修改。</string>
+
+    <string-array name="userinfo_medicalhistory_spinersource">
+        <item>新增1:之前是否接受国华法林治疗：</item>
+        <item>新增2:当前服用剂</item>
+        <item>新增3:目前使用剂量是否相对稳定</item>
+        <item>新增4:目前INR检查间隔。</item>
+    </string-array>
+    <string-array name="userinfo_receivetreatment_spinersource">
+        <item>是</item>
+        <item>否</item>
+    </string-array>
+    <string-array name="userinfo_takeMedicament_spinersource">
+        <item>3mg/片</item>
+        <item>2mg/片</item>
+    </string-array>
+    <string-array name="userinfo_inrCheck_spinersource">
+        <item>3天</item>
+        <item>1周</item>
+        <item>1个月</item>
+    </string-array>
+    
+    <!-- 语言播报使用的语言 -->
+    <string-array name="languages">
+	    <item >CANADA</item>
+	    <item >CANADA_FRENCH</item>
+	    <item >CHINA</item>
+	    <item >CHINESE</item>
+	    <item >ENGLISH</item>
+	    <item >FRANCE</item>
+	    <item >FRENCH</item>
+	    <item >GERMAN</item>
+	    <item >GERMANY</item>
+	    <item >CANADA</item>
+	    <item >ITALIAN</item>
+	    <item >ITALY</item>
+	    <item >JAPAN</item>
+	    <item >JAPANESE</item>
+	    <item >KOREA</item>
+	    <item >KOREAN</item>
+	    <item >PRC</item>
+	    <item >ROOT</item>
+	    <item >SIMPLIFIED_CHINESE</item>
+	    <item >TAIWAN</item>
+	    <item >TRADITIONAL_CHINESE</item>
+	    <item >UK</item>
+	    <item >US</item>
+	</string-array>
+
+</resources>

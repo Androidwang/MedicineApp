@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#EDF0F5"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:gravity="left"
+        android:text="共有纪录10条"
+        android:textColor="@color/black" />
+
+    <ListView
+        android:id="@+id/list_knowledge"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:divider="@null"
+        android:listSelector="@android:color/transparent"
+        android:scrollbars="none" >
+    </ListView>
+
+    <LinearLayout
+        android:id="@+id/lin_konwdetails"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:visibility="invisible"
+        android:background="@drawable/background_corners"
+         >
+
+        <TextView
+            android:id="@+id/konwdetails_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:text="本系统使用说明" />
+
+        <TextView
+            android:id="@+id/konwdetails_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+           android:textColor="#666666"
+            android:text="本系统是为了华法林使用者提供详细的跟踪用药指导，本药为间接作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成。" />
+
+        <Button
+            android:id="@+id/konwdetails_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/common_back" />
+    </LinearLayout>
+
+</LinearLayout>
