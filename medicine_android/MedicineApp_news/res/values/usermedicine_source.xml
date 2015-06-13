@@ -3,8 +3,6 @@
      <!-- 用药界面的数据 -->
     <string-array name="date1">
         <item>2.0</item>
-        
-       
         <item>2.3</item>
         <item>2.4</item>
         <item>2.5</item>
