@@ -8,12 +8,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.medicine.app.R;
 import com.medicine.app.db.database.InsertUserDB;
 import com.medicine.app.model.UserInfoBean;
+import com.medicine.app.utils.PreferencesUtils;
 
 /**
  * 我的信息界面
@@ -30,7 +34,7 @@ public class MyInfoFragment extends Fragment {
 	private EditText myinfo_idcode;
 	private TextView myinfo_year;
 	private TextView myinfo_month;
-	
+	private CheckBox checkBox;
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -57,6 +61,14 @@ public class MyInfoFragment extends Fragment {
 		myinfo_idcode  = (EditText)getView().findViewById(R.id.myinfo_idcode);
 		myinfo_year = (TextView)getView().findViewById(R.id.myinfo_year);
 		myinfo_month = (TextView)getView().findViewById(R.id.myinfo_month);
+		checkBox = (CheckBox) getView().findViewById(R.id.checkBox1);
+		checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				PreferencesUtils.setShurtDown(getActivity(), isChecked);
+			}
+		});
 		initData();
 	}
 	/**
