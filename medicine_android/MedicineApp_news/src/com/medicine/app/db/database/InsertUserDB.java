@@ -49,7 +49,7 @@ public class InsertUserDB implements CommonConst{
 					new String[] { info.getID(), info.getICODE(),
 							info.getStartTime(), info.getName(),
 							info.getSex(), info.getBornYearMonth(),
-							info.getAddress(),info.getIllSrc(),info.getHFLbefore(),info.getIllSrc(),
+							info.getAddress(),info.getIllSrc(),info.getHFLbefore(),
 							info.getHFLsrc(),info.getNowPace(),info.getINRTime()
 						});
 			db.close();

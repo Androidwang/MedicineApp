@@ -217,8 +217,8 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		btNext.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				 Thread accessWebServiceThread = new Thread(new WebServiceHandler());
-			     accessWebServiceThread.start();
+//				 Thread accessWebServiceThread = new Thread(new WebServiceHandler());
+//			     accessWebServiceThread.start();
 				
 				UserInfoBean mInfoBean = new UserInfoBean();
 				PreferencesUtils.setFirstLauncher(UserInfoActivity.this, false);

@@ -63,17 +63,17 @@ public class MyInfoFragment extends Fragment {
 	 * 从数据库查询用户输入信息
 	 */
 	private void initData() {
-//		UserInfoBean mBean = new UserInfoBean();
-//		mUserList = InsertUserDB.getInstance(getActivity()).selectUserInfo();
-//		String name = null;
-//		String phone = null;
-//		for (int i = 0; i < mUserList.size(); i++) {
-//			mBean = mUserList.get(i);
-//			name = mBean.getName();
-//			phone = "12";
-//		}
-//		myinfo_name.setText(name);
-//		myinfo_phone.setText(phone);
+		UserInfoBean mBean = new UserInfoBean();
+		mUserList = InsertUserDB.getInstance(getActivity()).selectUserInfo();
+		String name = null;
+		String phone = null;
+		for (int i = 0; i < mUserList.size(); i++) {
+			mBean = mUserList.get(i);
+			name = mBean.getName();
+			phone = "12";
+		}
+		myinfo_name.setText(name);
+		myinfo_phone.setText(phone);
 	}
 
 }
