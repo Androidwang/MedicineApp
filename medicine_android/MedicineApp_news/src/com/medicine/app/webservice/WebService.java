@@ -6,9 +6,8 @@ import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 import org.xmlpull.v1.XmlPullParserException;
-public class UserInfoService {
-	public static SoapObject common(String methodName, HashMap<String, Object> map, String nameSpace, String endPoint) {   
-        String soapAction = "http://Medication_WebService.org/Inter_TB_KNO";   
+public class WebService {
+	public static SoapObject common(String soapAction, String methodName, HashMap<String, Object> map, String nameSpace, String endPoint) {   
         // 指定WebService的命名空间和调用的方法名   
        SoapObject rpc = new SoapObject(nameSpace, methodName);   
        // 设置需调用WebService接口需要传入的参数   

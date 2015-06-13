@@ -25,7 +25,7 @@ import com.medicine.app.model.UserInfoBean;
 import com.medicine.app.utils.CommonConst;
 import com.medicine.app.utils.CommonUtils;
 import com.medicine.app.utils.PreferencesUtils;
-import com.medicine.app.webservice.UserInfoService;
+import com.medicine.app.webservice.WebService;
 import com.medicine.app.widgets.SpinerPopWindow;
 /**
  * 填写用户信息 UserInfoActivity
@@ -423,7 +423,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		      map.put("HFLsrc", "33");
 		      map.put("NowPace", "true");
 		      map.put("INRTime", "999");
-		      SoapObject soapObject = UserInfoService.common("Inter_TB_KNO", map, NAME_SPACE, END_POINT_SALE);
+		      SoapObject soapObject = WebService.common(CommonConst.SOAP_USER_INFO, "Inter_TB_KNO", map, NAME_SPACE, END_POINT_SALE);
 		      String result = soapObject.getProperty(0).toString();
 		      Message message = new Message();
 		      Bundle bundle = new Bundle();
