@@ -1,6 +1,8 @@
 package com.medicine.app;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -10,6 +12,7 @@ import com.medicine.app.fragment.HistoryFragment;
 import com.medicine.app.fragment.KnowledgeFragment;
 import com.medicine.app.fragment.MyInfoFragment;
 import com.medicine.app.fragment.UseMedicineFragment;
+import com.medicine.app.receiver.ShutDownListenReceiver;
 /**
  * HomeActivity主界面
  * 
@@ -24,6 +27,13 @@ public class HomeActivity extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// 动态注册BroadcastReceiver 监听SCREEN_OFF
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction("android.intent.action.SCREEN_OFF");
+		ShutDownListenReceiver receiver = new ShutDownListenReceiver();
+		registerReceiver(receiver, intentFilter);
+		
+		
 		setContentView(R.layout.activity_home);
 		fragments.add(new UseMedicineFragment());
 		fragments.add(new HistoryFragment());
