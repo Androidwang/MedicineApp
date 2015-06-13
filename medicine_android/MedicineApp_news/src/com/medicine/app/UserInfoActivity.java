@@ -420,7 +420,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		      map.put("HFLsrc", "33");
 		      map.put("NowPace", "true");
 		      map.put("INRTime", "999");
-		      SoapObject soapObject = WebService.common(SOAP_USER_INFO, "Inter_User", map, NAME_SPACE, END_POINT_SALE);
+		      SoapObject soapObject = WebService.common(SOAP_USER_INFO, METHOD_USER_INFO, map, NAME_SPACE, END_POINT_SALE);
 		      String result = soapObject.getProperty(0).toString();
 		      Log.d("result", result+"");
 		      Message message = new Message();
