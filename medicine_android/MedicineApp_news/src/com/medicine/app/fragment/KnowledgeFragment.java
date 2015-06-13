@@ -1,11 +1,17 @@
 package com.medicine.app.fragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.ksoap2.serialization.SoapObject;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,19 +24,24 @@ import android.widget.ListView;
 
 import com.medicine.app.R;
 import com.medicine.app.adapter.HistoryListAdapter;
+import com.medicine.app.db.database.InsertUserDB;
 import com.medicine.app.model.HistoryItemBean;
+import com.medicine.app.utils.CommonConst;
+import com.medicine.app.webservice.WebService;
 /**
  * 知识界面
  * @author wangyang
  *
  */
 
-public class KnowledgeFragment extends Fragment{
+public class KnowledgeFragment extends Fragment implements CommonConst {
     private ListView listKnowledge;
     private HistoryListAdapter historyAdapter;
     private List<HistoryItemBean> listData;
 	private LinearLayout llKonwdetails;
 	private Button konwdetailsBack;
+	private Button btnSync; // 知识同步按钮
+	private SyncDataTask syncDataTask;
 	@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -50,6 +61,13 @@ public class KnowledgeFragment extends Fragment{
     @Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		 initView();
+		 initData();
+		 setData();
+		
+    }
+    private void initView() {
+    	btnSync = (Button) getView().findViewById(R.id.btn_sync);
 		 listKnowledge = (ListView)getView().findViewById(R.id.list_knowledge); 
 		 llKonwdetails = (LinearLayout)getView().findViewById(R.id.lin_konwdetails);
 		 konwdetailsBack = (Button)getView().findViewById(R.id.konwdetails_back);
@@ -60,11 +78,18 @@ public class KnowledgeFragment extends Fragment{
 				llKonwdetails.setVisibility(View.GONE);
 			}
 		});
-		 initData();
-		 setData();
+		 btnSync.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				syncDataTask = new SyncDataTask();
+				syncDataTask.execute();
+			}
+		});
 		
-    }
-    /**
+	}
+
+	/**
      * 初始化数据
      */
     private void initData() {
@@ -93,5 +118,23 @@ public class KnowledgeFragment extends Fragment{
 		});
 	}
 
+	class SyncDataTask extends AsyncTask<Void, Void, String> {
 
+		@Override
+		protected String doInBackground(Void... params) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("ID", InsertUserDB.getInstance(getActivity()).getColumnValue("ID"));
+			SoapObject soapObject = WebService.common(SOAP_TB_KNO_LIST, METHOD_TB_KNO_LIST, map, NAME_SPACE, END_POINT_SALE);
+			String result = soapObject.getProperty(0).toString();
+		    Log.d("SyncDataTask", result+"");
+			return result;
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			if(result != null) {
+				
+			}
+		}
+	}
 }

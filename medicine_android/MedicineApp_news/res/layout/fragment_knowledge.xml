@@ -5,16 +5,30 @@
     android:background="#EDF0F5"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textView1"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:gravity="left"
-        android:text="共有纪录10条"
-        android:textColor="@color/black" />
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp" >
+
+        <TextView
+            android:id="@+id/tv_list_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="共有纪录10条"
+            android:textColor="@color/black" />
+        
+        <Button 
+            android:id="@+id/btn_sync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:text="知识同步"/>
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/list_knowledge"
@@ -33,15 +47,14 @@
         android:id="@+id/lin_konwdetails"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
         android:layout_marginTop="10dp"
-        android:visibility="invisible"
         android:background="@drawable/background_corners"
-         >
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="invisible" >
 
         <TextView
             android:id="@+id/konwdetails_title"
@@ -51,8 +64,8 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:textColor="@color/black"
-            android:text="本系统使用说明" />
+            android:text="本系统使用说明"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/konwdetails_content"
@@ -62,17 +75,17 @@
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
-           android:textColor="#666666"
-            android:text="本系统是为了华法林使用者提供详细的跟踪用药指导，本药为间接作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成。" />
+            android:text="本系统是为了华法林使用者提供详细的跟踪用药指导，本药为间接作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成作用的香豆素类口服抗凝药，通过抑制维生素 K 在肝脏细胞内合成。"
+            android:textColor="#666666" />
 
         <Button
             android:id="@+id/konwdetails_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginBottom="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/common_back" />
     </LinearLayout>
 
