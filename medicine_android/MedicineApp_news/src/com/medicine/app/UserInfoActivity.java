@@ -71,7 +71,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	private RelativeLayout rlinrCheck;
 	private TextView edinrCheck;
 	// 网址（如果是模拟器额话，需要把IP地址<192.168.1.***:8080>换成10.0.2.2:8080）   
-	public static String NAME_SPACE = "http://www.huafalin.com:8080/";   
+	public static String NAME_SPACE = "http://www.huafalin.com:8000/";   
 	
 	// 连接地址(WebService的方法地址)   
 	public static String END_POINT_SALE = NAME_SPACE + "MedC_WebS.asmx";  
@@ -232,11 +232,11 @@ public class UserInfoActivity extends Activity implements CommonConst {
 				String sHFLsrc = edtakeMedicament.getText().toString().trim();
 				String sNowPace = edmedicamentNumber.getText().toString().trim();
 				String sINRTime = edinrCheck.getText().toString().trim();
-				mInfoBean.setID("");
-				mInfoBean.setICODE("");
+				mInfoBean.setID("11");
+				mInfoBean.setICODE("11");
 				mInfoBean.setStartTime(CommonUtils.getCurrentDate());
 				mInfoBean.setName(sName);
-				mInfoBean.setSex("");
+				mInfoBean.setSex("11");
 				mInfoBean.setAddress(sAddress);
 				mInfoBean.setBornYearMonth(sYear+"-"+sMonth);
 				mInfoBean.setIllSrc(sLlhistory);

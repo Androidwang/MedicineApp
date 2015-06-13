@@ -63,15 +63,7 @@ public class InsertUserDB implements CommonConst{
 	 */
 	public void updateUserInfo(String title, String photo,
 			String photoThumbnail, String nameTime) {
-		SQLiteDatabase dbs = SQLiteDatabase.openOrCreateDatabase(Environment.getExternalStorageDirectory() + File.separator + DATABASE_NAME, null);
-		String sql = "UPDATE "+CommonConst.TABLE_NAME+" SET title = " + "'" + title + "'"
-				+ " , photo = " + "'" + photo + "'" + " , photoThumbnail = "
-				+ "'" + photoThumbnail + "'" + " , isUploadSuccess = 1 "
-				+ "WHERE name = " + "'" + nameTime + "'";
-		if (dbs.isOpen()) {
-			dbs.execSQL(sql);
-			dbs.close();
-		}
+		
 	}
 
 	/**

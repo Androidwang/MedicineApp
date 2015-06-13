@@ -1,6 +1,8 @@
 package com.medicine.app.utils;
 
-import android.os.Environment;
+import java.io.File;
+
+import com.medicine.app.db.database.SDBHelper;
 
 /**
  *  共同资源常量定义处理
@@ -10,14 +12,9 @@ import android.os.Environment;
 
 public interface CommonConst {
 	public final static int DB_VERSION = 1;// 版本号
-	public final static String TABLE_NAME = "himi";// 表名
-	public static final String DATABASE_NAME = "Himi.db";
+	public final static String TABLE_NAME = "medication_userinfo";// 表名
+	 public static final String mDbName =  SDBHelper.DB_DIR + File.separator + "medication_data_sql.db";  //数据库
 	
-	
-	
-	
-	public static final String PACKAGE_NAME = "com.medicine.app";
-	public static final String DB_PATH = "/data"+ Environment.getDataDirectory().getAbsolutePath() + "/"+ PACKAGE_NAME;
 
 	/**
 	 * soapAction

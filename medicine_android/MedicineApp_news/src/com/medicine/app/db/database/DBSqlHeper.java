@@ -1,5 +1,4 @@
 package com.medicine.app.db.database;
-import java.io.File;
 
 import com.medicine.app.utils.CommonConst;
 
@@ -12,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  *
  */
 public class DBSqlHeper extends SQLiteOpenHelper implements CommonConst{
-	 public static final String mDbName =  SDBHelper.DB_DIR + File.separator + "demo.db";  
+	
 	public DBSqlHeper(Context context) {
 		super(context, mDbName, null, DB_VERSION);
 	}
