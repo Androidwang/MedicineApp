@@ -2,10 +2,13 @@ package com.medicine.app.webservice;
 import java.io.IOException;
 import java.util.HashMap;
 import org.ksoap2.SoapEnvelope;
+import org.ksoap2.SoapFault12;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 import org.xmlpull.v1.XmlPullParserException;
+
+import android.util.Log;
 public class WebService {
 	public static SoapObject common(String soapAction, String methodName, HashMap<String, Object> map, String nameSpace, String endPoint) {   
         // 指定WebService的命名空间和调用的方法名   
@@ -18,10 +21,10 @@ public class WebService {
            }   
        }   
        // 生成调用WebService方法的SOAP请求信息,并指定SOAP的版本   
-       SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);   
+       SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);   
        envelope.bodyOut = rpc;   
        // 设置是否调用的是dotNet开发的WebService   
-       envelope.dotNet = false;   
+       envelope.dotNet = true;   
        // 设置连接超时时间为20秒   
      HttpTransportSE transport = new HttpTransportSE(endPoint, 20000);   
        try {   
@@ -31,10 +34,17 @@ public class WebService {
            e.printStackTrace();   
        } catch (XmlPullParserException e) {   
            e.printStackTrace();   
-       }   
-       // 获取返回的数据   
-       SoapObject soapObject = (SoapObject) envelope.bodyIn;   
-       return soapObject;   
+       }
+       if(envelope.bodyIn instanceof SoapFault12) {
+    	   String str = ((SoapFault12) envelope.bodyIn).toString();
+    	   Log.d("webservice-fault", str);
+    	   return null;
+       } else {
+    	// 获取返回的数据   
+           SoapObject soapObject = (SoapObject) envelope.bodyIn;   
+           return soapObject;  
+       }
+        
    }   
 }  
 
