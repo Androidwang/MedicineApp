@@ -13,6 +13,7 @@ import com.medicine.app.fragment.KnowledgeFragment;
 import com.medicine.app.fragment.MyInfoFragment;
 import com.medicine.app.fragment.UseMedicineFragment;
 import com.medicine.app.receiver.ShutDownListenReceiver;
+import com.medicine.app.utils.PreferencesUtils;
 /**
  * HomeActivity主界面
  * 
@@ -27,13 +28,7 @@ public class HomeActivity extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// 动态注册BroadcastReceiver 监听SCREEN_OFF
-		IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction("android.intent.action.SCREEN_OFF");
-		ShutDownListenReceiver receiver = new ShutDownListenReceiver();
-		registerReceiver(receiver, intentFilter);
-		
-		
+		registerReceiver();
 		setContentView(R.layout.activity_home);
 		fragments.add(new UseMedicineFragment());
 		fragments.add(new HistoryFragment());
@@ -49,5 +44,13 @@ public class HomeActivity extends FragmentActivity {
 							int checkedId, int index) {
 					}
 				});
+	}
+	
+	public void registerReceiver() {
+			// 动态注册BroadcastReceiver 监听SCREEN_OFF
+			IntentFilter intentFilter = new IntentFilter();
+			intentFilter.addAction("android.intent.action.SCREEN_OFF");
+			ShutDownListenReceiver receiver = new ShutDownListenReceiver();
+			registerReceiver(receiver, intentFilter);
 	}
 }

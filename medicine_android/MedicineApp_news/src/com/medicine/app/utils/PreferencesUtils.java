@@ -48,4 +48,20 @@ public class PreferencesUtils {
 		return preferences.getBoolean("firstLauncher", true);
 	}
 
+	/**
+	 * 是否执行屏幕熄灭后2分钟自动关机
+	 * @param context
+	 * @param shurtDown
+	 */
+	public static void setShurtDown(Context context, boolean shurtDown) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		preferences.edit().putBoolean("shurtDown", shurtDown).commit();
+	}
+	
+	public static boolean getShurtDown(Context context) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return preferences.getBoolean("shurtDown", false);
+	}
 }
