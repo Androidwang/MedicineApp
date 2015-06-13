@@ -18,7 +18,7 @@ public class DBSqlHeper extends SQLiteOpenHelper implements CommonConst{
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME
-				+ "(ID TEXT, ICODE TEXT, StartTime TEXT, Name TEXT, Sex TEXT, BornYearMonth TEXT, llhistory TEXT,llhistorydetails TEXT)");
+				+ "(ID TEXT, ICODE TEXT, StartTime TEXT, Name TEXT, Sex TEXT, BornYearMonth TEXT, Address TEXT,illSrc TEXT,HFLbefore TEXT,HFLsrc TEXT,NowPace TEXT,INRTime TEXT)");
 	}
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
