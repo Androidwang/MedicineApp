@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -70,11 +71,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	private TextView edmedicamentNumber;
 	private RelativeLayout rlinrCheck;
 	private TextView edinrCheck;
-	// 网址（如果是模拟器额话，需要把IP地址<192.168.1.***:8080>换成10.0.2.2:8080）   
-	public static String NAME_SPACE = "http://www.huafalin.com:8000/";   
 	
-	// 连接地址(WebService的方法地址)   
-	public static String END_POINT_SALE = NAME_SPACE + "MedC_WebS.asmx";  
 	private int ANDROID_ACCESS_CXF_WEBSERVICES = 001;
 	private Handler handler = new Handler(){
 		    @Override
@@ -217,8 +214,8 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		btNext.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-//				 Thread accessWebServiceThread = new Thread(new WebServiceHandler());
-//			     accessWebServiceThread.start();
+				 Thread accessWebServiceThread = new Thread(new WebServiceHandler());
+			     accessWebServiceThread.start();
 				
 				UserInfoBean mInfoBean = new UserInfoBean();
 				PreferencesUtils.setFirstLauncher(UserInfoActivity.this, false);
@@ -411,7 +408,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		    public void run() {
 		      Looper.prepare();
 		      HashMap<String, Object> map  = new HashMap<String, Object>();
-		      map.put("ID", "1");
+		      map.put("ID", "100");
 		      map.put("ICODE", "11");
 		      map.put("StartTime", "2015-3-4");
 		      map.put("name", "wangyang");
@@ -423,8 +420,9 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		      map.put("HFLsrc", "33");
 		      map.put("NowPace", "true");
 		      map.put("INRTime", "999");
-		      SoapObject soapObject = WebService.common(CommonConst.SOAP_USER_INFO, "Inter_TB_KNO", map, NAME_SPACE, END_POINT_SALE);
+		      SoapObject soapObject = WebService.common(SOAP_USER_INFO, "Inter_User", map, NAME_SPACE, END_POINT_SALE);
 		      String result = soapObject.getProperty(0).toString();
+		      Log.d("result", result+"");
 		      Message message = new Message();
 		      Bundle bundle = new Bundle();
 		      bundle.putString("result", result);
