@@ -62,6 +62,7 @@ public class MyInfoFragment extends Fragment {
 		myinfo_year = (TextView)getView().findViewById(R.id.myinfo_year);
 		myinfo_month = (TextView)getView().findViewById(R.id.myinfo_month);
 		checkBox = (CheckBox) getView().findViewById(R.id.checkBox1);
+		checkBox.setChecked(PreferencesUtils.getShurtDown(getActivity()));
 		checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			
 			@Override

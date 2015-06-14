@@ -1,12 +1,10 @@
 package com.medicine.app.db.database;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
 
 import com.medicine.app.model.UserInfoBean;
 import com.medicine.app.utils.CommonConst;
@@ -98,5 +96,28 @@ public class InsertUserDB implements CommonConst{
 			db.close();
 		}
 		return list;
+	}
+	
+	/**
+	 * 获取某个column的值
+	 * @param columnName
+	 * @return
+	 */
+	public String getColumnValue(String columnName) {
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		String result = null;
+		if (db.isOpen()) {
+			Cursor mCursor = db.rawQuery("select * from "+ TABLE_NAME, null);
+			if (mCursor != null) {
+				while (mCursor.moveToNext()) {
+					result = mCursor.getString(mCursor.getColumnIndex(columnName));
+					break;
+				}
+				mCursor.close();
+			}
+			db.close();
+		}
+		
+		return result;
 	}
 }
