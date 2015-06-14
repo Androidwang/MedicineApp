@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +20,10 @@ import com.baidu.speechsynthesizer.SpeechSynthesizer;
 import com.baidu.speechsynthesizer.SpeechSynthesizerListener;
 import com.baidu.speechsynthesizer.publicutility.SpeechError;
 import com.medicine.app.R;
-import com.medicine.app.model.UserInfoBean;
+import com.medicine.app.db.database.HistoryDB;
+import com.medicine.app.model.HistoryBean;
+import com.medicine.app.utils.CommonUtils;
+import com.medicine.app.utils.DateUtils;
 import com.medicine.app.widgets.CustemUseMedicine;
 import com.medicine.app.widgets.CustemUseMedicine.onSelectListener;
 /**
@@ -32,7 +37,12 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
 	private TextView tvSuggest;
 	private List<String> data1;
 	private SpeechSynthesizer speechSynthesizer;
-	
+	private CheckBox cbBlood;
+	private ImageView ivSubmit;
+	private CustemUseMedicine medicine1;
+    private CustemUseMedicine medicine2;
+    private CustemUseMedicine medicine3;
+    private CustemUseMedicine medicine4;
 	  /** 指定license路径，需要保证该路径的可读写权限 */
     private static final String LICENCE_FILE_NAME = Environment.getExternalStorageDirectory()
             + "/tts/baidu_tts_licence.dat";
@@ -52,10 +62,12 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
 	    System.loadLibrary("bds");
         speakTextview = (ImageView)getView().findViewById(R.id.speak_textview);
         tvSuggest = (TextView)getView().findViewById(R.id.tv_suggest);
-        CustemUseMedicine medicine1  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine01);
-        CustemUseMedicine medicine2  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine02);
-        CustemUseMedicine medicine3  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine03);
-        CustemUseMedicine medicine4  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine04);
+        medicine1  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine01);
+        medicine2  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine02);
+        medicine3  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine03);
+        medicine4  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine04);
+        cbBlood = (CheckBox) getView().findViewById(R.id.cb_blood);
+        ivSubmit = (ImageView) getView().findViewById(R.id.iv_submit);
         initData();
         initSpeechData();
         
@@ -107,6 +119,15 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
 			}
 		});  
     	
+    	
+    	ivSubmit.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				submit();
+				
+			}
+		});
         
     }
     
@@ -227,4 +248,23 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
 		
 	}
    
+	/**
+	 * 给药计算
+	 */
+	public void submit() {
+		String isBlood = "否";
+		if(cbBlood.isChecked()) {
+			isBlood = "是";
+		}
+		try {
+			boolean isInsert = HistoryDB.getInstance(getActivity()).insert(new HistoryBean(DateUtils.getNowTime(), "low", "up", "now", "last", isBlood, ""));
+			if(CommonUtils.isNetworkAvailable(getActivity())) {
+				//TODO 1.请求 Get_HFL_history_IDindex，获取服务器端最后一次上传数据的LastID
+				//TODO 2.查询本地History表中ID>LastID的数据集合List<History>
+				//TODO 3.逐一上传List中的数据,一条数据上传失败，等待5s重新上传这条数据，然后再上传剩下的数据。 Inter_HFL_history
+			}
+		} catch (Exception e) {
+			Log.e("To calculate error", e.getMessage());
+		}
+	}
 }

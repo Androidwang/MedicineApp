@@ -19,7 +19,7 @@ public class KnowledgeDB implements CommonConst {
 
 	public static KnowledgeDB getInstance(Context context) {
 		if (mInstance == null) {
-			synchronized (InsertUserDB.class) {
+			synchronized (KnowledgeDB.class) {
 				if (mInstance == null) {
 					mInstance = new KnowledgeDB(context);
 				}
@@ -42,7 +42,7 @@ public class KnowledgeDB implements CommonConst {
 			SQLiteStatement statement = db.compileStatement(sql);
 			db.beginTransaction();
 			for (KnowledgeBean data : datas) {
-				statement.bindString(1, data.getId());
+				statement.bindNull(1);
 				statement.bindString(2, data.getDataTime());
 				statement.bindString(3, data.getHeadStr());
 				statement.bindString(4, data.getShortConent());
