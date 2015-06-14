@@ -2,8 +2,6 @@ package com.medicine.app.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.speech.tts.TextToSpeech;
@@ -20,6 +18,7 @@ import com.baidu.speechsynthesizer.SpeechSynthesizer;
 import com.baidu.speechsynthesizer.SpeechSynthesizerListener;
 import com.baidu.speechsynthesizer.publicutility.SpeechError;
 import com.medicine.app.R;
+import com.medicine.app.model.UserInfoBean;
 import com.medicine.app.widgets.CustemUseMedicine;
 import com.medicine.app.widgets.CustemUseMedicine.onSelectListener;
 /**
@@ -32,18 +31,21 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
 	private ImageView speakTextview;
 	private TextView tvSuggest;
 	private List<String> data1;
-	 private SpeechSynthesizer speechSynthesizer;
+	private SpeechSynthesizer speechSynthesizer;
+	
 	  /** 指定license路径，需要保证该路径的可读写权限 */
     private static final String LICENCE_FILE_NAME = Environment.getExternalStorageDirectory()
             + "/tts/baidu_tts_licence.dat";
 
 
-    @Override
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_usemedicine, container, false);
     }
 
-    @Override
+
+
+	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         System.loadLibrary("bd_etts");
@@ -137,6 +139,7 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
      * 
      */
     private void initData() {
+    	
     	String[] medicalHistorySpinerData = getResources().getStringArray(R.array.date1);
     	data1 = new ArrayList<String>();
     	for (int i = 0; i < medicalHistorySpinerData.length; i++) {

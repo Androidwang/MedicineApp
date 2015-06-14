@@ -14,9 +14,11 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,18 +37,9 @@ import com.medicine.app.widgets.SpinerPopWindow;
  *
  */
 public class UserInfoActivity extends Activity implements CommonConst {
-	private Button btNext;
-	private TextView spYear;
-	private TextView spMonth;
+	
 	private ArrayList<String> dataYear = new ArrayList<String>();
 	private ArrayList<String> dataMonth = new ArrayList<String>();
-	private ArrayAdapter<String> adapterSpYear;
-	private ArrayAdapter<String> adapterSpMonth;
-	private EditText edName;
-	private EditText edPhonenum;
-	private EditText edAddress;
-	private TextView edLlhistory;
-	private RelativeLayout rlLlhistory;
 	private SpinerPopWindow SpinerCountry1 = null;
 	private SpinerPopWindow SpinerCountry2 = null;
 	private SpinerPopWindow SpinerCountry3 = null;
@@ -58,9 +51,16 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	private String[] receiveTreatmentSpinerData; //是否接受治疗
 	private String[] takeMedicamentSpinerData; //是否接受治疗
 	private String[] inrCheckSpinerData;
-	
 	private String[] year;
 	private String[] month;
+	private Button btNext;
+	private TextView spYear;
+	private TextView spMonth;
+	private EditText edName;
+	private EditText edPhonenum;
+	private EditText edAddress;
+	private TextView edLlhistory;
+	private RelativeLayout rlLlhistory;
 	private RelativeLayout sp_year;
 	private RelativeLayout sp_month;
 	private RelativeLayout rlreceivTreatment;
@@ -71,6 +71,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	private TextView edmedicamentNumber;
 	private RelativeLayout rlinrCheck;
 	private TextView edinrCheck;
+	private String manSex;
 	
 	private int ANDROID_ACCESS_CXF_WEBSERVICES = 001;
 	private Handler handler = new Handler(){
@@ -81,6 +82,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		      System.out.println("请求结果为："+result);
 		    }
 		  };
+	private RadioGroup radiogroupSex;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -93,6 +95,8 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	 * 初始化控件，以及设置出生年月
 	 */
 	private void initView() {
+		radiogroupSex = (RadioGroup)findViewById(R.id.radiogroup_sex);
+		
 		edName = (EditText)findViewById(R.id.ed_name);
 		edPhonenum = (EditText)findViewById(R.id.ed_phonenum);
 		edAddress = (EditText)findViewById(R.id.ed_address);
@@ -117,6 +121,22 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		spYear = (TextView) findViewById(R.id.tv_year);
 		spMonth = (TextView) findViewById(R.id.tv_month);
 		btNext = (Button) findViewById(R.id.bt_next);
+		
+		/**
+		 * 
+		 * 选择性别方法
+		 */
+		radiogroupSex.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				RadioButton  radioButton = (RadioButton)findViewById(group.getCheckedRadioButtonId());
+				manSex = radioButton.getText().toString();
+			}
+		});
+		
+		
+		
 
 		/**
 		 * 月选择弹出框
@@ -214,8 +234,6 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		btNext.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				 Thread accessWebServiceThread = new Thread(new WebServiceHandler());
-			     accessWebServiceThread.start();
 				
 				UserInfoBean mInfoBean = new UserInfoBean();
 				PreferencesUtils.setFirstLauncher(UserInfoActivity.this, false);
@@ -224,8 +242,8 @@ public class UserInfoActivity extends Activity implements CommonConst {
 				String sYear = spYear.getText().toString().trim();
 				String sMonth = spMonth.getText().toString().trim();
 				String sAddress= edAddress.getText().toString().trim();
-				String sLlhistory= edLlhistory.getText().toString().trim();
-				String  sHFLbefore  = edReceiveTreatment.getText().toString().trim();
+				String sIllSrc= edLlhistory.getText().toString().trim();
+				String sHFLbefore  = edReceiveTreatment.getText().toString().trim();
 				String sHFLsrc = edtakeMedicament.getText().toString().trim();
 				String sNowPace = edmedicamentNumber.getText().toString().trim();
 				String sINRTime = edinrCheck.getText().toString().trim();
@@ -233,27 +251,72 @@ public class UserInfoActivity extends Activity implements CommonConst {
 				mInfoBean.setICODE("11");
 				mInfoBean.setStartTime(CommonUtils.getCurrentDate());
 				mInfoBean.setName(sName);
-				mInfoBean.setSex("11");
+				mInfoBean.setPhoneNum(sPhonenum);
+				mInfoBean.setSex(manSex);
 				mInfoBean.setAddress(sAddress);
 				mInfoBean.setBornYearMonth(sYear+"-"+sMonth);
-				mInfoBean.setIllSrc(sLlhistory);
+				mInfoBean.setIllSrc(sIllSrc);
 				mInfoBean.setHFLbefore(sHFLbefore);
 				mInfoBean.setHFLsrc(sHFLsrc);
 				mInfoBean.setNowPace(sNowPace);
 				mInfoBean.setINRTime(sINRTime);
-				
 				InsertUserDB.getInstance(UserInfoActivity.this).insertUserInfo(mInfoBean);
+				requestInfo(sName,sPhonenum,sYear,sMonth,sAddress,sIllSrc,sHFLbefore,sHFLsrc,sNowPace,sINRTime);
 				Intent mIntent = new Intent(UserInfoActivity.this,HomeActivity.class);
 				startActivity(mIntent);
-				
-				
-				
-				
-				
 				finish();
 			}
 		});
 
+	}
+	/**
+	 * 
+	 * 请求INFO APi
+	 * @param sName
+	 * @param sPhonenum
+	 * @param sYear
+	 * @param sMonth
+	 * @param sAddress
+	 * @param sLlhistory
+	 * @param sHFLbefore
+	 * @param sHFLsrc
+	 * @param sNowPace
+	 * @param sINRTime
+	 */
+	protected void requestInfo(final String sName, final String sPhonenum, final String sYear,
+			final String sMonth, final String sAddress, final String sIllSrc,
+			final String sHFLbefore, final String sHFLsrc, final String sNowPace, final String sINRTime) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					 Looper.prepare();
+					  HashMap<String, Object> map  = new HashMap<String, Object>();
+					  map.put("ID", "100");
+					  map.put("ICODE", "11");
+					  map.put("StartTime", CommonUtils.getCurrentDate());
+					  map.put("name", sName);
+					  map.put("PhoneNum", sPhonenum);
+					  map.put("Sex", manSex);
+					  map.put("BornYearMonth", sYear+"-"+sMonth);
+					  map.put("Address", sAddress);
+					  map.put("illSrc", sIllSrc);
+					  map.put("HFLbefore", sHFLbefore);
+					  map.put("HFLsrc", sHFLsrc);
+					  map.put("NowPace",sNowPace);
+					  map.put("INRTime",sINRTime);
+					  SoapObject soapObject = WebService.common(SOAP_USER_INFO, METHOD_USER_INFO, map, NAME_SPACE, END_POINT_SALE);
+					  String result = soapObject.getProperty(0).toString();
+					  Log.d("result", result+"");
+					  Message message = new Message();
+					  Bundle bundle = new Bundle();
+					  bundle.putString("result", result);
+					  message.what = ANDROID_ACCESS_CXF_WEBSERVICES;//设置消息标示
+					  message.obj = "zxn";
+					  message. setData(bundle);//消息内容
+					  handler.sendMessage(message);//发送消息
+					  Looper.loop();
+				}
+			}).start();
 	}
 
 	private void initData() {
@@ -321,7 +384,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		});
 	
 	
-	//是否接受治疗数据初始化
+	//当前服用剂型
 	takeMedicamentSpinerData = getResources().getStringArray(R.array.userinfo_takeMedicament_spinersource);	
 	SpinerCountry5= new SpinerPopWindow(this);
 	SpinerCountry5.setSpinnerAdatper(takeMedicamentSpinerData);
@@ -403,34 +466,4 @@ public class UserInfoActivity extends Activity implements CommonConst {
 			edinrCheck.setText(inrCheckSpinerData[pos]);
 		}
 	}
-	 class WebServiceHandler implements Runnable{
-		    @Override
-		    public void run() {
-		      Looper.prepare();
-		      HashMap<String, Object> map  = new HashMap<String, Object>();
-		      map.put("ID", "100");
-		      map.put("ICODE", "11");
-		      map.put("StartTime", "2015-3-4");
-		      map.put("name", "wangyang");
-		      map.put("Sex", "男");
-		      map.put("BornYearMonth", "19900605");
-		      map.put("Address", "湖北");
-		      map.put("illSrc", "3");
-		      map.put("HFLbefore", "33");
-		      map.put("HFLsrc", "33");
-		      map.put("NowPace", "true");
-		      map.put("INRTime", "999");
-		      SoapObject soapObject = WebService.common(SOAP_USER_INFO, METHOD_USER_INFO, map, NAME_SPACE, END_POINT_SALE);
-		      String result = soapObject.getProperty(0).toString();
-		      Log.d("result", result+"");
-		      Message message = new Message();
-		      Bundle bundle = new Bundle();
-		      bundle.putString("result", result);
-		      message.what = ANDROID_ACCESS_CXF_WEBSERVICES;//设置消息标示
-		      message.obj = "zxn";
-		      message. setData(bundle);//消息内容
-		      handler.sendMessage(message);//发送消息
-		      Looper.loop();
-		    }
-	 }
 }

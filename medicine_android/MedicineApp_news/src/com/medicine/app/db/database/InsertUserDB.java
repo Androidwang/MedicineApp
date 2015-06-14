@@ -43,9 +43,9 @@ public class InsertUserDB implements CommonConst{
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		if (db.isOpen()) {
 			db.execSQL(
-					"insert into "+CommonConst.TABLE_NAME +" (ID,ICODE,StartTime,Name,Sex,BornYearMonth,Address,illSrc,HFLbefore,HFLsrc,NowPace,INRTime) values (?,?,?,?,?,?,?,?,?,?,?,?)",
+					"insert into "+CommonConst.TABLE_NAME +" (ID,ICODE,StartTime,Name,PhoneNum,Sex,BornYearMonth,Address,illSrc,HFLbefore,HFLsrc,NowPace,INRTime) values (?,?,?,?,?,?,?,?,?,?,?,?,?)",
 					new String[] { info.getID(), info.getICODE(),
-							info.getStartTime(), info.getName(),
+							info.getStartTime(), info.getName(),info.getPhoneNum(),
 							info.getSex(), info.getBornYearMonth(),
 							info.getAddress(),info.getIllSrc(),info.getHFLbefore(),
 							info.getHFLsrc(),info.getNowPace(),info.getINRTime()
@@ -53,6 +53,7 @@ public class InsertUserDB implements CommonConst{
 			db.close();
 		}
 	}
+
 
 	/**
 	 * 更新用户信息
@@ -80,7 +81,11 @@ public class InsertUserDB implements CommonConst{
 					String idCode = mCursor.getString(mCursor.getColumnIndex("ICODE"));
 					String startTime = mCursor.getString(mCursor.getColumnIndex("StartTime"));
 					String name = mCursor.getString(mCursor.getColumnIndex("Name"));
+					String phoneNum = mCursor.getString(mCursor.getColumnIndex("PhoneNum"));
+					System.out.println("phoneNum--"+phoneNum);
+					
 					String sex = mCursor.getString(mCursor.getColumnIndex("Sex"));
+					
 					String bornYearMonth = mCursor.getString(mCursor.getColumnIndex("BornYearMonth"));
 					String address = mCursor.getString(mCursor.getColumnIndex("Address"));
 					String illSrc = mCursor.getString(mCursor.getColumnIndex("illSrc"));
@@ -88,7 +93,7 @@ public class InsertUserDB implements CommonConst{
 					String hFLsrc = mCursor.getString(mCursor.getColumnIndex("HFLsrc"));
 					String nowPace = mCursor.getString(mCursor.getColumnIndex("NowPace"));
 					String iNRTime = mCursor.getString(mCursor.getColumnIndex("INRTime"));
-					list.add(new UserInfoBean(id, idCode, startTime, name, sex, bornYearMonth, address, illSrc, hFLbefore, hFLsrc, nowPace, iNRTime)
+					list.add(new UserInfoBean(id, idCode, startTime, name,phoneNum, sex, bornYearMonth, address, illSrc, hFLbefore, hFLsrc, nowPace, iNRTime)
 		);
 				}
 				mCursor.close();
@@ -97,7 +102,7 @@ public class InsertUserDB implements CommonConst{
 		}
 		return list;
 	}
-	
+
 	/**
 	 * 获取某个column的值
 	 * @param columnName
