@@ -1,7 +1,6 @@
 package com.medicine.app.utils;
 
 import java.io.File;
-
 import com.medicine.app.db.database.SDBHelper;
 
 /**

@@ -9,6 +9,7 @@ public class UserInfoBean {
 	private String ICODE;
 	private String StartTime;
 	private String Name;
+	private String PhoneNum;
 	private String Sex;
 	private String BornYearMonth;
 	private String Address;
@@ -17,17 +18,20 @@ public class UserInfoBean {
 	private String HFLsrc;
 	private String NowPace;
 	private String INRTime;
-	
-	
+	public UserInfoBean() {
+		super();
+	}
 	
 	public UserInfoBean(String iD, String iCODE, String startTime, String name,
-			String sex, String bornYearMonth, String address, String illSrc,
-			String hFLbefore, String hFLsrc, String nowPace, String iNRTime) {
+			String phoneNum, String sex, String bornYearMonth, String address,
+			String illSrc, String hFLbefore, String hFLsrc, String nowPace,
+			String iNRTime) {
 		super();
 		ID = iD;
 		ICODE = iCODE;
 		StartTime = startTime;
 		Name = name;
+		PhoneNum = phoneNum;
 		Sex = sex;
 		BornYearMonth = bornYearMonth;
 		Address = address;
@@ -37,10 +41,9 @@ public class UserInfoBean {
 		NowPace = nowPace;
 		INRTime = iNRTime;
 	}
-	public UserInfoBean() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+
+
+
 	public String getID() {
 		return ID;
 	}
@@ -64,6 +67,12 @@ public class UserInfoBean {
 	}
 	public void setName(String name) {
 		Name = name;
+	}
+	public String getPhoneNum() {
+		return PhoneNum;
+	}
+	public void setPhoneNum(String phoneNum) {
+		PhoneNum = phoneNum;
 	}
 	public String getSex() {
 		return Sex;
@@ -115,7 +124,7 @@ public class UserInfoBean {
 	}
 	
 	
-
+	
 	
 	
 }

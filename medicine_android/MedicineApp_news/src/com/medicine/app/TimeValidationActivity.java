@@ -1,5 +1,4 @@
 package com.medicine.app;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,11 +7,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.medicine.app.utils.CommonUtils;
 import com.medicine.app.widgets.CalendarDatePicker;
 import com.medicine.app.widgets.CalendarTimePicker;
-
 /**
  * 日期，时间效验TimeValidationActivity
  * 
