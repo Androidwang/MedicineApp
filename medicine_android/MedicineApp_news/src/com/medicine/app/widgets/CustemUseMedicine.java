@@ -106,8 +106,14 @@ public class CustemUseMedicine extends View
 	public void setData(List<String> datas)
 	{
 		mDataList = datas;
-		mCurrentSelected = datas.size() / 2;
+		mCurrentSelected = datas.size() /2;
 		invalidate();
+	}
+	
+	
+	public String getDefaultData()
+	{
+		return mDataList.get(mCurrentSelected);
 	}
 
 	/**
@@ -117,6 +123,8 @@ public class CustemUseMedicine extends View
 	 */
 	public void setSelected(int selected)
 	{
+		
+		System.out.println("selected-------"+selected);
 		mCurrentSelected = selected;
 		int distance = mDataList.size() / 2 - mCurrentSelected;
 		if (distance < 0)
@@ -192,6 +200,8 @@ public class CustemUseMedicine extends View
 		super.onDraw(canvas);
 		// 根据index绘制view
 		if (isInit)
+			
+			System.out.println("-------------------------");
 			drawData(canvas);
 	}
 
@@ -346,4 +356,7 @@ public class CustemUseMedicine extends View
 	{
 		void onSelect(String text);
 	}
+	
+	
+	
 }

@@ -1,7 +1,6 @@
 package com.medicine.app.fragment;
 import java.util.ArrayList;
 import java.util.List;
-
 import android.os.Bundle;
 import android.os.Environment;
 import android.speech.tts.TextToSpeech;
@@ -13,12 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.baidu.speechsynthesizer.SpeechSynthesizer;
 import com.baidu.speechsynthesizer.SpeechSynthesizerListener;
 import com.baidu.speechsynthesizer.publicutility.SpeechError;
 import com.medicine.app.R;
-import com.medicine.app.model.UserInfoBean;
 import com.medicine.app.widgets.CustemUseMedicine;
 import com.medicine.app.widgets.CustemUseMedicine.onSelectListener;
 /**
@@ -26,7 +23,7 @@ import com.medicine.app.widgets.CustemUseMedicine.onSelectListener;
  * @author wangyang
  *
  */
-public class UseMedicineFragment extends Fragment implements   SpeechSynthesizerListener{
+public class UseMedicineFragment extends Fragment implements  SpeechSynthesizerListener{
 	TextToSpeech mSpeech;
 	private ImageView speakTextview;
 	private TextView tvSuggest;
@@ -44,7 +41,6 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
     }
 
 
-
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -58,8 +54,6 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
         CustemUseMedicine medicine4  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine04);
         initData();
         initSpeechData();
-        
-        
     	medicine1.setData(data1);
     	medicine1.setOnSelectListener(new onSelectListener()
 		{
@@ -146,6 +140,11 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
     		data1.add(medicalHistorySpinerData[i]);
 		}
 		
+    	
+    	
+    	
+    	
+    	
 		 speakTextview.setOnClickListener(new OnClickListener() {
 			
 			@Override
