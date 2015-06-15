@@ -103,6 +103,15 @@ public class CustemUseMedicine extends View
 			mSelectListener.onSelect(mDataList.get(mCurrentSelected));
 	}
 
+	
+
+	public String defaultSelectData()
+	{
+		return mDataList.get(mCurrentSelected);
+	}
+	
+	
+	
 	public void setData(List<String> datas)
 	{
 		mDataList = datas;
