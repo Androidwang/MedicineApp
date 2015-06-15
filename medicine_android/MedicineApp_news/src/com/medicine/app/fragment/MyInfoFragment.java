@@ -9,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -53,6 +55,10 @@ public class MyInfoFragment extends Fragment {
 	private RelativeLayout rlmyinfoType;
 	private TextView myinfoType;
 	private String[] takeMedicamentSpinerData;
+	private Button myinfoUpdate;
+	private RadioGroup groupSex;
+	private String manSex = "0";
+	
 	public MyInfoFragment(List<UserInfoBean> mUserList) {
 		this.mUserList = mUserList;
 	}
@@ -71,6 +77,7 @@ public class MyInfoFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		myinfoUpdate = (Button)getView().findViewById(R.id.myinfo_updateinfo);
 		rlmyinfoType = (RelativeLayout)getView().findViewById(R.id.rlmyinfo_type);
 		myinfoType = (TextView)getView().findViewById(R.id.myinfo_type);
 		myinfo_name  = (EditText)getView().findViewById(R.id.myinfo_name);
@@ -83,13 +90,39 @@ public class MyInfoFragment extends Fragment {
 		radioWoman = (RadioButton)getView().findViewById(R.id.radio_woman);
 		sp_year = (RelativeLayout)getView().findViewById(R.id.sp_year);
 		sp_month = (RelativeLayout)getView().findViewById(R.id.sp_month);
+		groupSex = (RadioGroup) getView().findViewById(R.id.radiogroup_sex);
+		
 		checkBox = (CheckBox) getView().findViewById(R.id.checkBox1);
 		checkBox.setChecked(PreferencesUtils.getShurtDown(getActivity()));
-		checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		
+		initDataAndSet();
+		
+		/**
+		 * 
+		 * 选择性别方法
+		 */
+		groupSex.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				RadioButton  radioButton = (RadioButton)getView().findViewById(group.getCheckedRadioButtonId());
+				if (radioButton.getText().toString().equals("男")) {
+					manSex = "0";
+				}else {
+					manSex = "1";
+				};
+				
+			}
+		});
+		
+		
+		checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				PreferencesUtils.setShurtDown(getActivity(), isChecked);
 			}
+		
 		});
 		
 		/**
@@ -123,7 +156,27 @@ public class MyInfoFragment extends Fragment {
 				SpinerCountry3.showAsDropDown(myinfoType);
 			}
 		});
-		initDataAndSet();
+		
+		myinfoUpdate.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				UserInfoBean mInfoBean = new UserInfoBean();
+				String sName = myinfo_name.getText().toString().trim();
+				String sPhonenum = myinfo_phone.getText().toString().trim();
+				String sYear = spYear.getText().toString().trim();
+				String sMonth = spMonth.getText().toString().trim();
+				String sMyinfoType = myinfoType.getText().toString().trim();
+				mInfoBean.setName(sName);
+				mInfoBean.setPhoneNum(sPhonenum);
+				mInfoBean.setBornYearMonth(sYear+"-"+sMonth);
+				mInfoBean.setSex(manSex);
+				mInfoBean.setHFLsrc(sMyinfoType);
+				InsertUserDB.getInstance(getActivity()).insertUserInfo(mInfoBean);
+				
+				
+			}
+		});
 	}
 	
 	
@@ -153,21 +206,16 @@ public class MyInfoFragment extends Fragment {
 		myinfo_id.setText(id);
 		myinfo_idcode.setText(idCode);
 		spYear.setText(bornYearMonth);
-//		if (sex.equals("男")) {
-//			radioMan.setClickable(true);
-//		}
-//		if (sex.equals("女")) {
-//			radioWoman.setClickable(true);
-//		}
-		
-		
-		
-		
+		if (sex.equals("0")) {
+			radioMan.setChecked(true);;;
+		}else {
+			radioWoman.setChecked(true);
+		}
 		
 		// 年份设定为当年的前后20年
 		Calendar cal = Calendar.getInstance();
-		for (int i = 0; i < 40; i++) {
-			dataYear.add("" + (cal.get(Calendar.YEAR) - 20 + i));
+		for (int i = 0; i < 60; i++) {
+			dataYear.add("" + (cal.get(Calendar.YEAR) - 50 + i));
 		}
 
 		// 12个月
