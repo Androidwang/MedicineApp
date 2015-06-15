@@ -7,6 +7,7 @@ import org.ksoap2.serialization.SoapObject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -72,8 +73,10 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	private RelativeLayout rlinrCheck;
 	private TextView edinrCheck;
 	private String manSex;
-	
+	private String id;
+	private String icode;
 	private int ANDROID_ACCESS_CXF_WEBSERVICES = 001;
+	private GetAuthorizeTask getAuthorizeTask;
 	private Handler handler = new Handler(){
 		    @Override
 		    public void handleMessage(Message msg) {
@@ -87,6 +90,8 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_userinfo);
+		getAuthorizeTask = new GetAuthorizeTask();
+		getAuthorizeTask.execute();
 		initView();
 		initData();
 	}
@@ -247,8 +252,8 @@ public class UserInfoActivity extends Activity implements CommonConst {
 				String sHFLsrc = edtakeMedicament.getText().toString().trim();
 				String sNowPace = edmedicamentNumber.getText().toString().trim();
 				String sINRTime = edinrCheck.getText().toString().trim();
-				mInfoBean.setID("11");
-				mInfoBean.setICODE("11");
+				mInfoBean.setID(id);
+				mInfoBean.setICODE(icode);
 				mInfoBean.setStartTime(CommonUtils.getCurrentDate());
 				mInfoBean.setName(sName);
 				mInfoBean.setPhoneNum(sPhonenum);
@@ -291,8 +296,8 @@ public class UserInfoActivity extends Activity implements CommonConst {
 				public void run() {
 					 Looper.prepare();
 					  HashMap<String, Object> map  = new HashMap<String, Object>();
-					  map.put("ID", "100");
-					  map.put("ICODE", "11");
+					  map.put("ID", id);
+					  map.put("ICODE", icode);
 					  map.put("StartTime", CommonUtils.getCurrentDate());
 					  map.put("name", sName);
 					  map.put("PhoneNum", sPhonenum);
@@ -466,4 +471,30 @@ public class UserInfoActivity extends Activity implements CommonConst {
 			edinrCheck.setText(inrCheckSpinerData[pos]);
 		}
 	}
+	
+	/**
+	 * 获取授权码
+	 * @author WangLin
+	 *
+	 */
+	class GetAuthorizeTask extends AsyncTask<Void, Void, String> {
+
+		@Override
+		protected String doInBackground(Void... params) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			id = CommonUtils.getUUID();
+			map.put("ID", id);
+			SoapObject soapObject = WebService.common(SOAP_GET_AUTHORIZE, METHOD_GET_AUTHORIZE, map, NAME_SPACE, END_POINT_SALE);
+			String result = soapObject.getProperty(0).toString();
+			Log.d("GetAuthorizeTask", "webservice return: "+result);
+			return result;
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			icode = result;
+		}
+		
+	}
+
 }

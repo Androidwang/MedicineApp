@@ -23,6 +23,8 @@ public interface CommonConst {
 	public static final String METHOD_TB_KNO_LIST = "Get_TB_KNO_List"; // 获取知识数据列表信息
 	public static final String METHOD_HFL_HISTORY = "Inter_HFL_history"; // 上传计算数据
 	public static final String METHOD_KNO_SELECT_COUNT = "KNO_SELECT_COUNT"; // 查询知识数据记录最大条数编号
+	public static final String METHOD_GET_AUTHORIZE = "Get_authorize"; // 获取授权
+
 	/**
 	 * webservice
 	 */
@@ -38,4 +40,6 @@ public interface CommonConst {
 	public static final String SOAP_TB_KNO_LIST = NAME_SPACE + METHOD_TB_KNO_LIST; // 获取知识数据列表信息
 	public static final String SOAP_HFL_HISTORY = NAME_SPACE + METHOD_HFL_HISTORY; // 上传计算数据
 	public static final String SOAP_KNO_SELECT_COUNT = NAME_SPACE + METHOD_KNO_SELECT_COUNT; // 查询知识数据记录最大条数编号
+	public static final String SOAP_GET_AUTHORIZE = NAME_SPACE + METHOD_GET_AUTHORIZE; //获取授权
+
 }
