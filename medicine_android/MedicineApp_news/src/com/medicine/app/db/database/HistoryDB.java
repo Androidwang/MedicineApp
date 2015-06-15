@@ -61,4 +61,18 @@ public class HistoryDB {
 		}
 		return list;
 	}
+	
+	/**
+	 * 获取最新一条数据的ID
+	 * @return
+	 */
+	public String getLastDataId() {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor cursor = db.rawQuery("select last_insert_rowid() from "+HistoryBean.TABLE_NAME, null);
+		int id = 0;
+		if(cursor.moveToFirst()) {
+			id = cursor.getInt(0);
+		}
+		return id+"";
+	}
 }

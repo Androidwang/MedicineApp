@@ -1,9 +1,15 @@
 package com.medicine.app.fragment;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.ksoap2.serialization.SoapObject;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -21,9 +27,12 @@ import com.baidu.speechsynthesizer.SpeechSynthesizerListener;
 import com.baidu.speechsynthesizer.publicutility.SpeechError;
 import com.medicine.app.R;
 import com.medicine.app.db.database.HistoryDB;
+import com.medicine.app.db.database.InsertUserDB;
 import com.medicine.app.model.HistoryBean;
+import com.medicine.app.utils.CommonConst;
 import com.medicine.app.utils.CommonUtils;
 import com.medicine.app.utils.DateUtils;
+import com.medicine.app.webservice.WebService;
 import com.medicine.app.widgets.CustemUseMedicine;
 import com.medicine.app.widgets.CustemUseMedicine.onSelectListener;
 /**
@@ -31,7 +40,8 @@ import com.medicine.app.widgets.CustemUseMedicine.onSelectListener;
  * @author wangyang
  *
  */
-public class UseMedicineFragment extends Fragment implements   SpeechSynthesizerListener{
+public class UseMedicineFragment extends Fragment implements  CommonConst, SpeechSynthesizerListener{
+	private static final String TAG = "UseMedicineFragment";
 	TextToSpeech mSpeech;
 	private ImageView speakTextview;
 	private TextView tvSuggest;
@@ -43,11 +53,28 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
     private CustemUseMedicine medicine2;
     private CustemUseMedicine medicine3;
     private CustemUseMedicine medicine4;
+    private String low;
+    private String up;
+    private String now;
+    private String last;
+    private UploadHistoryTask uploadHistoryTask;
 	  /** 指定license路径，需要保证该路径的可读写权限 */
     private static final String LICENCE_FILE_NAME = Environment.getExternalStorageDirectory()
             + "/tts/baidu_tts_licence.dat";
+    private static final int MESSAGE_UPLOAD = 1;
+    private  Handler mHandler = new Handler() {
+    	@Override
+    	public void handleMessage(Message msg) {
+    		switch (msg.what) {
+			case MESSAGE_UPLOAD:
+				uploadHistoryTask.execute(msg.getData().getString("lastUploadId"));
+				break;
 
-
+			default:
+				break;
+			}
+    	}
+    };
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_usemedicine, container, false);
@@ -68,6 +95,7 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
         medicine4  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine04);
         cbBlood = (CheckBox) getView().findViewById(R.id.cb_blood);
         ivSubmit = (ImageView) getView().findViewById(R.id.iv_submit);
+        uploadHistoryTask = new UploadHistoryTask();
         initData();
         initSpeechData();
         
@@ -79,6 +107,7 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
 			@Override
 			public void onSelect(String text)
 			{
+				low = text;
 				Toast.makeText(getActivity(), "选择了 " + text + " 分",
 						Toast.LENGTH_SHORT).show();
 			}
@@ -91,6 +120,7 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
 			@Override
 			public void onSelect(String text)
 			{
+				up = text;
 				Toast.makeText(getActivity(), "选择了 " + text + " 分",
 						Toast.LENGTH_SHORT).show();
 			}
@@ -103,6 +133,7 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
 			@Override
 			public void onSelect(String text)
 			{
+				now = text;
 				Toast.makeText(getActivity(), "选择了 " + text + " 分",
 						Toast.LENGTH_SHORT).show();
 			}
@@ -114,6 +145,7 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
 			@Override
 			public void onSelect(String text)
 			{
+				last = text;
 				Toast.makeText(getActivity(), "选择了 " + text + " 分",
 						Toast.LENGTH_SHORT).show();
 			}
@@ -160,7 +192,10 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
      * 
      */
     private void initData() {
-    	
+    	low = medicine1.defaultSelectData();
+    	up = medicine2.defaultSelectData();
+    	now = medicine3.defaultSelectData();
+    	last = medicine4.defaultSelectData();
     	String[] medicalHistorySpinerData = getResources().getStringArray(R.array.date1);
     	data1 = new ArrayList<String>();
     	for (int i = 0; i < medicalHistorySpinerData.length; i++) {
@@ -257,14 +292,73 @@ public class UseMedicineFragment extends Fragment implements   SpeechSynthesizer
 			isBlood = "是";
 		}
 		try {
-			boolean isInsert = HistoryDB.getInstance(getActivity()).insert(new HistoryBean(DateUtils.getNowTime(), "low", "up", "now", "last", isBlood, ""));
+			boolean isInsert = HistoryDB.getInstance(getActivity()).insert(new HistoryBean(DateUtils.getNowTime(), low, up, now, last, isBlood, ""));
 			if(CommonUtils.isNetworkAvailable(getActivity())) {
 				//TODO 1.请求 Get_HFL_history_IDindex，获取服务器端最后一次上传数据的LastID
 				//TODO 2.查询本地History表中ID>LastID的数据集合List<History>
 				//TODO 3.逐一上传List中的数据,一条数据上传失败，等待5s重新上传这条数据，然后再上传剩下的数据。 Inter_HFL_history
+				new AsyncTask<Void, Void, String>() {
+
+					@Override
+					protected String doInBackground(Void... params) {
+						HashMap<String, Object> map = new HashMap<String, Object>();
+						map.put("ID", InsertUserDB.getInstance(getActivity()).getColumnValue("ID"));
+						map.put("IDIndex", HistoryDB.getInstance(getActivity()).getLastDataId());
+						SoapObject soapObject = WebService.common(SOAP_HFL_HISTORY_IDINDEX, METHOD_HFL_HISTORY_IDINDEX, map, NAME_SPACE, END_POINT_SALE);
+						String result = soapObject.getProperty(0).toString();
+						Log.d(TAG, "Get_HFL_history_IDindex return:"+result);
+						return result;
+					}
+					
+					@Override
+					protected void onPostExecute(String result) {
+						Message msg = new Message();
+						msg.what = MESSAGE_UPLOAD;
+						Bundle bundle = new Bundle();
+						bundle.putString("lastUploadId", result);
+						msg.setData(bundle);
+						mHandler.sendMessage(msg);
+					}
+				};
 			}
 		} catch (Exception e) {
 			Log.e("To calculate error", e.getMessage());
 		}
+	}
+	
+	/**
+	 * 上传计算数据
+	 * @author WangLin
+	 *
+	 */
+	class UploadHistoryTask extends AsyncTask<String, Void, Void> {
+
+		@Override
+		protected Void doInBackground(String... params) {
+			String ID = InsertUserDB.getInstance(getActivity()).getColumnValue("ID");
+			List<HistoryBean> list = HistoryDB.getInstance(getActivity()).selectAfterById(Integer.parseInt(params[0]));
+			if(list != null && list.size() > 0) {
+				SoapObject soapObject;
+				for (HistoryBean historyBean : list) {
+					HashMap<String, Object> map = new HashMap<String, Object>();
+					map.put("ID", ID);
+					map.put(HistoryBean.ID, historyBean.getId()+"");
+					map.put(HistoryBean.TIME, historyBean.getTime());
+					map.put(HistoryBean.INR_LOW, historyBean.getLow());
+					map.put(HistoryBean.INR_UP, historyBean.getUp());
+					map.put(HistoryBean.NOW_INR, historyBean.getNow());
+					map.put(HistoryBean.LAST_HFL, historyBean.getLast());
+					map.put(HistoryBean.BLOOD, historyBean.getBlood());
+					map.put(HistoryBean.RECORD, historyBean.getRecord());
+					boolean result = false;
+					while (!result) {
+						soapObject = WebService.common(SOAP_HFL_HISTORY, METHOD_HFL_HISTORY, map, NAME_SPACE, END_POINT_SALE);
+						result = (Boolean) soapObject.getProperty(0);
+					}
+				}
+			}
+			return null;
+		}
+		
 	}
 }
