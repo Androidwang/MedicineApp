@@ -72,7 +72,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	private TextView edmedicamentNumber;
 	private RelativeLayout rlinrCheck;
 	private TextView edinrCheck;
-	private String manSex;
+	private String manSex = "0";
 	private String id;
 	private String icode;
 	private int ANDROID_ACCESS_CXF_WEBSERVICES = 001;
@@ -136,7 +136,11 @@ public class UserInfoActivity extends Activity implements CommonConst {
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				RadioButton  radioButton = (RadioButton)findViewById(group.getCheckedRadioButtonId());
-				manSex = radioButton.getText().toString();
+				if (radioButton.getText().toString().equals("男")) {
+					manSex = "0";
+				}else {
+					manSex = "1";
+				};
 			}
 		});
 		
@@ -327,7 +331,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	private void initData() {
 		// 年份设定为当年的前后20年
 	Calendar cal = Calendar.getInstance();
-	for (int i = 0; i < 40; i++) {
+	for (int i = 0; i < 60; i++) {
 		dataYear.add("" + (cal.get(Calendar.YEAR) - 20 + i));
 	}
 
