@@ -75,4 +75,34 @@ public class HistoryDB {
 		}
 		return id+"";
 	}
+	
+	/**
+	 * 分页查询
+	 * @param page 页数
+	 * @param limit 每页显示几条
+	 * @return
+	 */
+	public List<HistoryBean> getListByLimit(int page, int limit) {
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor cursor = db.query(	HistoryBean.TABLE_NAME, 
+									null, null, null, null, null, 
+									HistoryBean.ID+" desc", 
+									(page*limit)+","+limit);
+		List<HistoryBean> list = new ArrayList<HistoryBean>();
+		if(cursor.moveToFirst()) {
+			do {
+				list.add(new HistoryBean(	cursor.getInt(0), 
+										 	cursor.getString(1), 
+										 	cursor.getString(2), 
+										 	cursor.getString(3), 
+										 	cursor.getString(4), 
+										 	cursor.getString(5), 
+										 	cursor.getString(6), 
+										 	cursor.getString(7)
+										 )
+						);
+			} while (cursor.moveToNext());
+		}
+		return list;
+	}
 }
