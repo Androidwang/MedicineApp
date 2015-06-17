@@ -3,6 +3,9 @@ package com.medicine.app.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.medicine.app.R;
 import com.medicine.app.adapter.HistoryListAdapter;
 import com.medicine.app.model.HistoryItemBean;
@@ -10,6 +13,7 @@ import com.medicine.app.model.HistoryItemBean;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +28,11 @@ import android.widget.AdapterView.OnItemClickListener;
  * 历史界面
  * 
  * @author wangyang
- *
+ * 
  */
 public class HistoryFragment extends Fragment {
-	private ListView listHistory;
+	private static final String TAG = "HistoryFragment";
+	private PullToRefreshListView listHistory;
 	private List<HistoryItemBean> listData;
 	private HistoryListAdapter historyAdapter;
 	private LinearLayout llHistory;
@@ -44,17 +49,16 @@ public class HistoryFragment extends Fragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_history, container, false);
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		listHistory = (ListView) getView().findViewById(R.id.list_history);
-		llHistory = (LinearLayout)getView().findViewById(R.id.lin_history);
-		historydetailsBack = (Button)getView().findViewById(R.id.historydetails_back);
+		listHistory = (PullToRefreshListView) getView().findViewById(R.id.list_history);
+		llHistory = (LinearLayout) getView().findViewById(R.id.lin_history);
+		historydetailsBack = (Button) getView().findViewById(R.id.historydetails_back);
 		historydetailsBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -87,11 +91,24 @@ public class HistoryFragment extends Fragment {
 		listHistory.setAdapter(historyAdapter);
 		listHistory.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-	   public void onItemClick(AdapterView<?> parent, View view,
-			int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				listHistory.setVisibility(View.GONE);
 				llHistory.setVisibility(View.VISIBLE);
-				
+
+			}
+		});
+		listHistory.setOnRefreshListener(new OnRefreshListener2<ListView>() {
+
+			@Override
+			public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+				//下拉
+				Log.d(TAG, "listView onPullDownToRefresh");
+			}
+
+			@Override
+			public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+				//上拉
+				Log.d(TAG, "listView onPullUpToRefresh");
 			}
 		});
 	}
