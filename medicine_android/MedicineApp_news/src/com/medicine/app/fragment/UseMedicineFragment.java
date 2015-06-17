@@ -4,10 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.ksoap2.serialization.SoapObject;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
@@ -21,16 +19,16 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.baidu.speechsynthesizer.SpeechSynthesizer;
-import com.baidu.speechsynthesizer.SpeechSynthesizerListener;
-import com.baidu.speechsynthesizer.publicutility.SpeechError;
+import cn.yunzhisheng.tts.offline.TTSPlayerListener;
+import cn.yunzhisheng.tts.offline.basic.ITTSControl;
+import cn.yunzhisheng.tts.offline.basic.TTSFactory;
 import com.medicine.app.R;
 import com.medicine.app.db.database.HistoryDB;
 import com.medicine.app.db.database.InsertUserDB;
 import com.medicine.app.model.HistoryBean;
 import com.medicine.app.utils.CommonConst;
 import com.medicine.app.utils.CommonUtils;
+import com.medicine.app.utils.Config;
 import com.medicine.app.utils.DateUtils;
 import com.medicine.app.webservice.WebService;
 import com.medicine.app.widgets.CustemUseMedicine;
@@ -40,13 +38,12 @@ import com.medicine.app.widgets.CustemUseMedicine.onSelectListener;
  * @author wangyang
  *
  */
-public class UseMedicineFragment extends Fragment implements  CommonConst, SpeechSynthesizerListener{
+public class UseMedicineFragment extends Fragment implements  CommonConst{
 	private static final String TAG = "UseMedicineFragment";
 	TextToSpeech mSpeech;
 	private ImageView speakTextview;
 	private TextView tvSuggest;
 	private List<String> data1;
-	private SpeechSynthesizer speechSynthesizer;
 	private CheckBox cbBlood;
 	private ImageView ivSubmit;
 	private CustemUseMedicine medicine1;
@@ -57,10 +54,8 @@ public class UseMedicineFragment extends Fragment implements  CommonConst, Speec
     private String up;
     private String now;
     private String last;
+    private ITTSControl mTTSPlayer;
     private UploadHistoryTask uploadHistoryTask;
-	  /** 指定license路径，需要保证该路径的可读写权限 */
-    private static final String LICENCE_FILE_NAME = Environment.getExternalStorageDirectory()
-            + "/tts/baidu_tts_licence.dat";
     private static final int MESSAGE_UPLOAD = 1;
     private  Handler mHandler = new Handler() {
     	@Override
@@ -85,8 +80,6 @@ public class UseMedicineFragment extends Fragment implements  CommonConst, Speec
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        System.loadLibrary("bd_etts");
-	    System.loadLibrary("bds");
         speakTextview = (ImageView)getView().findViewById(R.id.speak_textview);
         tvSuggest = (TextView)getView().findViewById(R.id.tv_suggest);
         medicine1  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine01);
@@ -163,26 +156,53 @@ public class UseMedicineFragment extends Fragment implements  CommonConst, Speec
         
     }
     
-    /**
-     * 初始化百度语音参数
-     */
+	/**
+	 * 初始化本地离线TTS
+	 */
     private void initSpeechData() {
-    	  speechSynthesizer =SpeechSynthesizer.newInstance(SpeechSynthesizer.SYNTHESIZER_AUTO, getActivity(),
-                  "holder", this);
-          // 请替换为开放平台上申请的apikey和secretkey
-          speechSynthesizer.setApiKey("8MAxI5o7VjKSZOKeBzS4XtxO", "Ge5GXVdGQpaxOmLzc8fOM8309ATCz9Ha");
-          // 设置授权文件路径
-          speechSynthesizer.setParam(SpeechSynthesizer.PARAM_TTS_LICENCE_FILE, LICENCE_FILE_NAME);
-          // TTS所需的资源文件，可以放在任意可读目录，可以任意改名
-          String ttsTextModelFilePath =
-        		  getActivity().getApplicationInfo().dataDir + "/lib/libbd_etts_text.dat.so";
-          String ttsSpeechModelFilePath =
-        		  getActivity().getApplicationInfo().dataDir + "/lib/libbd_etts_speech_female.dat.so";
-          speechSynthesizer.setParam(SpeechSynthesizer.PARAM_TTS_TEXT_MODEL_FILE, ttsTextModelFilePath);
-          speechSynthesizer.setParam(SpeechSynthesizer.PARAM_TTS_SPEECH_MODEL_FILE, ttsSpeechModelFilePath);
-       
-          //getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		
+
+		// 初始化语音合成对象
+		mTTSPlayer = TTSFactory.createTTSControl(getActivity(), Config.appKey);
+		
+		// 设置回调监听
+		mTTSPlayer.setTTSListener(new TTSPlayerListener() {
+			@Override
+			public void onPlayEnd() {
+				// 播放完成回调
+			}
+
+			@Override
+			public void onPlayBegin() {
+				// 开始播放回调
+			}
+
+			@Override
+			public void onInitFinish() {
+				// 初始化成功回调
+			}
+
+			@Override
+			public void onError(cn.yunzhisheng.tts.offline.common.USCError arg0) {
+				// 语音合成错误回调
+				toastMessage(arg0.toString());
+			}
+
+			@Override
+			public void onCancel() {
+				// 取消播放回调
+				log_i("onCancel");
+			}
+
+			@Override
+			public void onBuffer() {
+				// 开始缓冲回调
+				log_i("onBuffer");
+
+			}
+		});
+		// 初始化合成引擎
+		mTTSPlayer.init();
 	}
 
 	/**
@@ -192,22 +212,24 @@ public class UseMedicineFragment extends Fragment implements  CommonConst, Speec
      * 
      */
     private void initData() {
-    	low = medicine1.defaultSelectData();
-    	up = medicine2.defaultSelectData();
-    	now = medicine3.defaultSelectData();
-    	last = medicine4.defaultSelectData();
     	String[] medicalHistorySpinerData = getResources().getStringArray(R.array.date1);
     	data1 = new ArrayList<String>();
     	for (int i = 0; i < medicalHistorySpinerData.length; i++) {
     		data1.add(medicalHistorySpinerData[i]);
 		}
-		
+    	
+    	low = medicine1.defaultSelectData();
+    	up = medicine2.defaultSelectData();
+    	now = medicine3.defaultSelectData();
+    	last = medicine4.defaultSelectData();
+    	
 		 speakTextview.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				try {  
-					speechSynthesizer.speak("你好");
+					mTTSPlayer.play("5.0");
+					
 		        } catch (Exception e) {  
 		            e.printStackTrace();  
 		        }  
@@ -215,74 +237,13 @@ public class UseMedicineFragment extends Fragment implements  CommonConst, Speec
 		});
 		
 	}
-
-	@Override
-	public void onBufferProgressChanged(SpeechSynthesizer arg0, int arg1) {
-		// TODO Auto-generated method stub
-		
+	private void log_i(String log) {
+		Log.i("demo", log);
+	}
+    private void toastMessage(String message) {
+		Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
 	}
 
-	@Override
-	public void onCancel(SpeechSynthesizer arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onError(SpeechSynthesizer arg0, SpeechError arg1) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onNewDataArrive(SpeechSynthesizer arg0, byte[] arg1,
-			boolean arg2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onSpeechFinish(SpeechSynthesizer arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onSpeechPause(SpeechSynthesizer arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onSpeechProgressChanged(SpeechSynthesizer arg0, int arg1) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onSpeechResume(SpeechSynthesizer arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onSpeechStart(SpeechSynthesizer arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onStartWorking(SpeechSynthesizer arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onSynthesizeFinish(SpeechSynthesizer arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-   
 	/**
 	 * 给药计算
 	 */
