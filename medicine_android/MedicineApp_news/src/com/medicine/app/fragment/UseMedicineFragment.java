@@ -62,7 +62,7 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
     	public void handleMessage(Message msg) {
     		switch (msg.what) {
 			case MESSAGE_UPLOAD:
-				uploadHistoryTask.execute(msg.getData().getString("lastUploadId"));
+				new UploadHistoryTask().execute(msg.getData().getString("lastUploadId"));
 				break;
 
 			default:
@@ -287,7 +287,7 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 						msg.setData(bundle);
 						mHandler.sendMessage(msg);
 					}
-				};
+				}.execute();
 			}
 		} catch (Exception e) {
 			Log.e("To calculate error", e.getMessage());
@@ -303,28 +303,33 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 
 		@Override
 		protected Void doInBackground(String... params) {
-			String ID = InsertUserDB.getInstance(getActivity()).getColumnValue("ID");
-			List<HistoryBean> list = HistoryDB.getInstance(getActivity()).selectAfterById(Integer.parseInt(params[0]));
-			if(list != null && list.size() > 0) {
-				SoapObject soapObject;
-				for (HistoryBean historyBean : list) {
-					HashMap<String, Object> map = new HashMap<String, Object>();
-					map.put("ID", ID);
-					map.put(HistoryBean.ID, historyBean.getId()+"");
-					map.put(HistoryBean.TIME, historyBean.getTime());
-					map.put(HistoryBean.INR_LOW, historyBean.getLow());
-					map.put(HistoryBean.INR_UP, historyBean.getUp());
-					map.put(HistoryBean.NOW_INR, historyBean.getNow());
-					map.put(HistoryBean.LAST_HFL, historyBean.getLast());
-					map.put(HistoryBean.BLOOD, historyBean.getBlood());
-					map.put(HistoryBean.RECORD, historyBean.getRecord());
-					boolean result = false;
-					while (!result) {
-						soapObject = WebService.common(SOAP_HFL_HISTORY, METHOD_HFL_HISTORY, map, NAME_SPACE, END_POINT_SALE);
-						result = (Boolean) soapObject.getProperty(0);
+			try {
+				String ID = InsertUserDB.getInstance(getActivity()).getColumnValue("ID");
+				List<HistoryBean> list = HistoryDB.getInstance(getActivity()).selectAfterById(Integer.parseInt(params[0]));
+				if(list != null && list.size() > 0) {
+					SoapObject soapObject;
+					for (HistoryBean historyBean : list) {
+						HashMap<String, Object> map = new HashMap<String, Object>();
+						map.put("ID", ID);
+						map.put(HistoryBean.ID, historyBean.getId()+"");
+						map.put(HistoryBean.TIME, historyBean.getTime());
+						map.put(HistoryBean.INR_LOW, historyBean.getLow());
+						map.put(HistoryBean.INR_UP, historyBean.getUp());
+						map.put(HistoryBean.NOW_INR, historyBean.getNow());
+						map.put(HistoryBean.LAST_HFL, historyBean.getLast());
+						map.put(HistoryBean.BLOOD, historyBean.getBlood());
+						map.put(HistoryBean.RECORD, "1");
+						boolean result = false;
+						while (!result) {
+							soapObject = WebService.common(SOAP_HFL_HISTORY, METHOD_HFL_HISTORY, map, NAME_SPACE, END_POINT_SALE);
+							result = (Boolean) soapObject.getProperty(0);
+						}
 					}
 				}
+			} catch (Exception e) {
+				Log.e(TAG, "UploadHistoryTask", e);
 			}
+			
 			return null;
 		}
 		

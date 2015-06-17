@@ -11,7 +11,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import android.util.Log;
 public class WebService {
 	public static SoapObject common(String soapAction, String methodName, HashMap<String, Object> map, String nameSpace, String endPoint) {   
-        // 指定WebService的命名空间和调用的方法名   
+       Log.d("WebService", "methodName:"+methodName);
+       Log.d("WebService", "map:"+map.toString());
+		// 指定WebService的命名空间和调用的方法名   
        SoapObject rpc = new SoapObject(nameSpace, methodName);   
        // 设置需调用WebService接口需要传入的参数   
        if (null != map && map.size() > 0) {   

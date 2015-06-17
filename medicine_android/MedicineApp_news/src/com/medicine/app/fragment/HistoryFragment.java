@@ -8,10 +8,15 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.medicine.app.R;
 import com.medicine.app.adapter.HistoryListAdapter;
+import com.medicine.app.db.database.HistoryDB;
+import com.medicine.app.model.HistoryBean;
 import com.medicine.app.model.HistoryItemBean;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +28,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
 
 /**
  * 历史界面
@@ -36,8 +42,28 @@ public class HistoryFragment extends Fragment {
 	private List<HistoryItemBean> listData;
 	private HistoryListAdapter historyAdapter;
 	private LinearLayout llHistory;
+	private TextView tvNum;
 	private Button historydetailsBack;
+	private int page = 0;
+	private int count = 0;
+	private int currentPage = 0;
+	private static final int LIMIT = 4;
+	private RefreshDataTask refreshDataTask;
+	private int itemNum = 1;
+	private static final int MESSAGE_LOAD = 2;
+	private Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case MESSAGE_LOAD:
+				new RefreshDataTask().execute();
+				break;
 
+			default:
+				break;
+			}
+		}
+	};
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -57,6 +83,7 @@ public class HistoryFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		listHistory = (PullToRefreshListView) getView().findViewById(R.id.list_history);
+		tvNum = (TextView) getView().findViewById(R.id.tv_num);
 		llHistory = (LinearLayout) getView().findViewById(R.id.lin_history);
 		historydetailsBack = (Button) getView().findViewById(R.id.historydetails_back);
 		historydetailsBack.setOnClickListener(new OnClickListener() {
@@ -66,6 +93,7 @@ public class HistoryFragment extends Fragment {
 				llHistory.setVisibility(View.GONE);
 			}
 		});
+		refreshDataTask = new RefreshDataTask();
 		initData();
 		setData();
 
@@ -75,12 +103,20 @@ public class HistoryFragment extends Fragment {
 	 * 初始化数据
 	 */
 	private void initData() {
-		listData = new ArrayList<HistoryItemBean>();
-		for (int i = 1; i < 11; i++) {
-			listData.add(new HistoryItemBean(i + "", "2013年5月21日12店23分23秒",
-					"目标INR值2-2.5，本次检测INR值1.5，检测前华法林用量3mg, 给药建议：调整计算－1mg,请服用2mg并于三天后复查INR。"));
+		currentPage = 0;
+		try {
+			count = HistoryDB.getInstance(getActivity()).getCount();
+			if(count != 0) {
+				page = (int) Math.ceil((double)count/(double)LIMIT);
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "db getCount error", e);
 		}
-
+		Log.d(TAG, "page num:"+page);
+		tvNum.setText("共有记录"+count+"条");
+		listData = new ArrayList<HistoryItemBean>();
+		refreshDataTask = new RefreshDataTask();
+		refreshDataTask.execute();
 	}
 
 	/**
@@ -103,14 +139,78 @@ public class HistoryFragment extends Fragment {
 			public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
 				//下拉
 				Log.d(TAG, "listView onPullDownToRefresh");
+				new AsyncTask<Void, Void, Void>(){
+
+					@Override
+					protected Void doInBackground(Void... params) {
+						currentPage = 0;
+						try {
+							count = HistoryDB.getInstance(getActivity()).getCount();
+							if(count != 0) {
+								page = (int) Math.ceil((double)count/(double)LIMIT);
+							}
+						} catch (Exception e) {
+							Log.e(TAG, "db getCount error", e);
+						}
+						listData.clear();
+						itemNum = 1;
+						return null;
+					}
+					
+					protected void onPostExecute(Void result) {
+						tvNum.setText("共有记录"+count+"条");
+						handler.sendEmptyMessage(MESSAGE_LOAD);
+					};
+				}.execute();
 			}
 
 			@Override
 			public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 				//上拉
 				Log.d(TAG, "listView onPullUpToRefresh");
+				if(page >= 1 && currentPage <= page) {
+					new RefreshDataTask().execute();
+				}else{
+					listHistory.onRefreshComplete();
+				}
+				
 			}
 		});
 	}
-
+	class RefreshDataTask extends AsyncTask<Void, Void, Boolean> {
+		List<HistoryBean> list = new ArrayList<HistoryBean>();
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			try {
+				if(page >= 1 && currentPage < page) {
+					list = HistoryDB.getInstance(getActivity()).getListByLimit(currentPage, LIMIT);
+					currentPage++;
+					if (list != null && list.size() > 0) {
+						return true;
+					}else{
+						return false;
+					}
+				} else {
+					return false;
+				}
+			} catch (Exception e) {
+				Log.e(TAG, "RefreshDataTask doInBackground error", e);
+				return false;
+			}
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean result) {
+			listHistory.onRefreshComplete();
+			if(result) {
+				for (HistoryBean historyBean : list) {
+					String str = "目标INR值"+historyBean.getLow()+"-"+historyBean.getUp()+"，本次检测INR值"+historyBean.getNow()+"，检测前华法林用量"+historyBean.getLast()+"mg。";
+					listData.add(new HistoryItemBean(itemNum+"", historyBean.getTime(), str));
+					++itemNum;
+				}
+				historyAdapter.notifyDataSetChanged();
+			}
+		}
+		
+	}
 }
