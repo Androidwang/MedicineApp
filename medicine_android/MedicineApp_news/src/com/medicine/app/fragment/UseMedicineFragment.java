@@ -218,11 +218,6 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
     		data1.add(medicalHistorySpinerData[i]);
 		}
     	
-    	low = medicine1.defaultSelectData();
-    	up = medicine2.defaultSelectData();
-    	now = medicine3.defaultSelectData();
-    	last = medicine4.defaultSelectData();
-    	
 		 speakTextview.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -248,6 +243,18 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 	 * 给药计算
 	 */
 	public void submit() {
+		if(low == null) {
+			low = medicine1.defaultSelectData();
+		}
+		if(up == null) {
+			up = medicine2.defaultSelectData();
+		}
+		if(now == null) {
+			now = medicine3.defaultSelectData();
+		}
+		if(last == null) {
+			last = medicine4.defaultSelectData();
+		}
 		String isBlood = "否";
 		if(cbBlood.isChecked()) {
 			isBlood = "是";
