@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/tv_num"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -28,7 +28,7 @@
         android:divider="@null"
         android:listSelector="@android:color/transparent"
         android:scrollbars="none"
-        ptr:ptrMode="pullFromEnd" >
+        ptr:ptrMode="both" >
     </com.handmark.pulltorefresh.library.PullToRefreshListView>
 
     <LinearLayout

@@ -8,6 +8,7 @@ import com.medicine.app.model.HistoryBean;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class HistoryDB {
 	private DBSqlHeper dbHelper;
@@ -42,7 +43,7 @@ public class HistoryDB {
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		List<HistoryBean> list = new ArrayList<HistoryBean>();
 		if(db.isOpen()) {
-			Cursor mCursor = db.rawQuery("select * from" + HistoryBean.TABLE_NAME + " where "+HistoryBean.ID+">"+id, null);
+			Cursor mCursor = db.rawQuery("select * from " + HistoryBean.TABLE_NAME + " where "+HistoryBean.ID+">"+id, null);
 			if(mCursor!=null) {
 				while (mCursor.moveToNext()) {
 					int mId = mCursor.getInt(mCursor.getColumnIndex(HistoryBean.ID));
@@ -83,11 +84,13 @@ public class HistoryDB {
 	 * @return
 	 */
 	public List<HistoryBean> getListByLimit(int page, int limit) {
+		String limitStr = (page*limit)+","+limit;
+		Log.d("getListByLimit", limitStr+"");
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		Cursor cursor = db.query(	HistoryBean.TABLE_NAME, 
 									null, null, null, null, null, 
 									HistoryBean.ID+" desc", 
-									(page*limit)+","+limit);
+									limitStr);
 		List<HistoryBean> list = new ArrayList<HistoryBean>();
 		if(cursor.moveToFirst()) {
 			do {
@@ -104,5 +107,22 @@ public class HistoryDB {
 			} while (cursor.moveToNext());
 		}
 		return list;
+	}
+	/**
+	 * 获取表数据总条数
+	 * @return
+	 */
+	public int getCount() {
+		int count = 0;
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		if(db.isOpen()) {
+			Cursor cursor = db.rawQuery("select count(*) from "+HistoryBean.TABLE_NAME, null);
+			if(cursor.moveToFirst()) {
+				count = cursor.getInt(0);
+			}
+			cursor.close();
+			db.close();
+		}
+		return count;
 	}
 }
