@@ -30,7 +30,8 @@
             android:text="知识同步"/>
     </RelativeLayout>
 
-    <ListView
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/list_knowledge"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -40,8 +41,9 @@
         android:layout_marginTop="10dp"
         android:divider="@null"
         android:listSelector="@android:color/transparent"
-        android:scrollbars="none" >
-    </ListView>
+        android:scrollbars="none"
+        ptr:ptrMode="both" >
+    </com.handmark.pulltorefresh.library.PullToRefreshListView>
 
     <LinearLayout
         android:id="@+id/lin_konwdetails"

@@ -8,7 +8,7 @@ public class KnowledgeBean {
 	/**
 	 * ID 知识编号
 	 */
-	public static final String ID = "ID";
+	public static final String ID = "IDStr";
 	/**
 	 * DataTime 编辑时间
 	 */
@@ -27,6 +27,7 @@ public class KnowledgeBean {
 	public static final String CONTENT = "Content";
 
 	public int id;
+	public String IDStr;
 	public String dataTime;
 	public String headStr;
 	public String shortConent;
@@ -39,9 +40,10 @@ public class KnowledgeBean {
 	 * @param shortContent 缩略简介
 	 * @param content 知识内容
 	 */
-	public KnowledgeBean(int id, String dataTime, String headStr, String shortContent,
+	public KnowledgeBean(int id, String IDStr, String dataTime, String headStr, String shortContent,
 			String content) {
 		this.id = id;
+		this.IDStr = IDStr; 
 		this.dataTime = dataTime;
 		this.headStr = headStr;
 		this.shortConent = shortContent;
@@ -53,12 +55,19 @@ public class KnowledgeBean {
 	 * @param shortContent 缩略简介
 	 * @param content 知识内容
 	 */
-	public KnowledgeBean(String dataTime, String headStr, String shortContent,
+	public KnowledgeBean(String IDStr, String dataTime, String headStr, String shortContent,
 			String content) {
+		this.IDStr = IDStr;
 		this.dataTime = dataTime;
 		this.headStr = headStr;
 		this.shortConent = shortContent;
 		this.content = content;
+	}
+	public String getIDStr() {
+		return IDStr;
+	}
+	public void setIDStr(String iDStr) {
+		IDStr = iDStr;
 	}
 	public int getId() {
 		return id;
