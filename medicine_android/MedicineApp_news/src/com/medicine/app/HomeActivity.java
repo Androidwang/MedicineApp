@@ -1,14 +1,12 @@
 package com.medicine.app;
 import java.util.ArrayList;
 import java.util.List;
-
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import com.medicine.app.adapter.FragmentTabAdapter;
 import com.medicine.app.db.database.InsertUserDB;
 import com.medicine.app.fragment.HistoryFragment;
@@ -16,12 +14,12 @@ import com.medicine.app.fragment.KnowledgeFragment;
 import com.medicine.app.fragment.MyInfoFragment;
 import com.medicine.app.fragment.UseMedicineFragment;
 import com.medicine.app.model.UserInfoBean;
-import com.medicine.app.receiver.ShutDownListenReceiver;
-
+import com.medicine.app.receiver.ShutDownListenReceiver; 
 /**
  * HomeActivity主界面
  * 
  * @author wangyang
+ *
  *
  */
 public class HomeActivity extends FragmentActivity {
@@ -69,8 +67,10 @@ public class HomeActivity extends FragmentActivity {
 		
 	}
 
+	/**
+	 * // 动态注册BroadcastReceiver 监听SCREEN_OFF
+	 */
 	public void registerReceiver() {
-			// 动态注册BroadcastReceiver 监听SCREEN_OFF
 			IntentFilter intentFilter = new IntentFilter();
 			intentFilter.addAction("android.intent.action.SCREEN_OFF");
 			ShutDownListenReceiver receiver = new ShutDownListenReceiver();

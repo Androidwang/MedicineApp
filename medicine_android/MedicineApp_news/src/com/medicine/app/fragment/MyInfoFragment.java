@@ -91,11 +91,10 @@ public class MyInfoFragment extends Fragment {
 		sp_year = (RelativeLayout)getView().findViewById(R.id.sp_year);
 		sp_month = (RelativeLayout)getView().findViewById(R.id.sp_month);
 		groupSex = (RadioGroup) getView().findViewById(R.id.radiogroup_sex);
-		
 		checkBox = (CheckBox) getView().findViewById(R.id.checkBox1);
 		checkBox.setChecked(PreferencesUtils.getShurtDown(getActivity()));
-		
 		initDataAndSet();
+		getAuthorizeCode();
 		
 		/**
 		 * 
@@ -179,7 +178,21 @@ public class MyInfoFragment extends Fragment {
 		});
 	}
 	
-	
+	/**
+	 * 
+	 * 解密授权码
+	 * 
+	 */
+	private void getAuthorizeCode(){
+		
+		
+		
+		
+		
+		
+		
+	}
+
 	/**
 	 * 从数据库查询用户输入信息
 	 */
@@ -205,7 +218,8 @@ public class MyInfoFragment extends Fragment {
 		myinfo_phone.setText(phone);
 		myinfo_id.setText(id);
 		myinfo_idcode.setText(idCode);
-		spYear.setText(bornYearMonth);
+		System.out.println("idCode"+idCode);
+		spYear.setText(bornYearMonth.substring(0, 4));
 		if (sex.equals("0")) {
 			radioMan.setChecked(true);;;
 		}else {

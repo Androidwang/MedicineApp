@@ -27,6 +27,7 @@
         android:layout_marginTop="10dp"
         android:divider="@null"
         android:listSelector="@android:color/transparent"
+        ptr:ptrShowIndicator="false"
         android:scrollbars="none"
         ptr:ptrMode="both" >
     </com.handmark.pulltorefresh.library.PullToRefreshListView>

@@ -1,7 +1,5 @@
 package com.medicine.app.model;
-
 import android.content.ContentValues;
-
 public class HistoryBean {
 	/**
 	 * 实体表名

@@ -50,7 +50,7 @@ public class CommonUtils implements CommonConst{
 	// 获取当前时间
 	public static String getCurrentDate() {
 		Date date = new Date(System.currentTimeMillis());
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		return dateFormat.format(date);
 	}
 
