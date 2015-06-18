@@ -43,6 +43,8 @@ public class HistoryFragment extends Fragment {
 	private HistoryListAdapter historyAdapter;
 	private LinearLayout llHistory;
 	private TextView tvNum;
+	private TextView detailTitle;
+	private TextView detailContent;
 	private Button historydetailsBack;
 	private int page = 0;
 	private int count = 0;
@@ -86,6 +88,8 @@ public class HistoryFragment extends Fragment {
 		tvNum = (TextView) getView().findViewById(R.id.tv_num);
 		llHistory = (LinearLayout) getView().findViewById(R.id.lin_history);
 		historydetailsBack = (Button) getView().findViewById(R.id.historydetails_back);
+		detailContent = (TextView) getView().findViewById(R.id.historydetails_content);
+		detailTitle = (TextView) getView().findViewById(R.id.historydetails_title);
 		historydetailsBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -128,6 +132,9 @@ public class HistoryFragment extends Fragment {
 		listHistory.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				HistoryItemBean data = listData.get(--position);
+				detailTitle.setText(data.getHistoryTime());
+				detailContent.setText(data.getHistoryContent());
 				listHistory.setVisibility(View.GONE);
 				llHistory.setVisibility(View.VISIBLE);
 
@@ -205,7 +212,7 @@ public class HistoryFragment extends Fragment {
 			if(result) {
 				for (HistoryBean historyBean : list) {
 					String str = "目标INR值"+historyBean.getLow()+"-"+historyBean.getUp()+"，本次检测INR值"+historyBean.getNow()+"，检测前华法林用量"+historyBean.getLast()+"mg。";
-					listData.add(new HistoryItemBean(itemNum+"", historyBean.getTime(), str));
+					listData.add(new HistoryItemBean(itemNum+"", historyBean.getTime(), historyBean.getRecord(), str));
 					++itemNum;
 				}
 				historyAdapter.notifyDataSetChanged();

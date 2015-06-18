@@ -51,6 +51,8 @@ public class KnowledgeFragment extends Fragment implements CommonConst {
 	private Button btnSync; // 知识同步按钮
 	private SyncDataTask syncDataTask;
 	private TextView tvNum;
+	private TextView detailTitle;
+	private TextView detailContent;
 	private int page = 0;
 	private int count = 0;
 	private int currentPage = 0;
@@ -100,6 +102,8 @@ public class KnowledgeFragment extends Fragment implements CommonConst {
 		 listKnowledge = (PullToRefreshListView)getView().findViewById(R.id.list_knowledge); 
 		 llKonwdetails = (LinearLayout)getView().findViewById(R.id.lin_konwdetails);
 		 konwdetailsBack = (Button)getView().findViewById(R.id.konwdetails_back);
+		 detailContent = (TextView) getView().findViewById(R.id.konwdetails_content);
+		 detailTitle = (TextView) getView().findViewById(R.id.konwdetails_title);
 		 konwdetailsBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -145,6 +149,9 @@ public class KnowledgeFragment extends Fragment implements CommonConst {
 			@Override
 	   public void onItemClick(AdapterView<?> parent, View view,
 			int position, long id) {
+				HistoryItemBean data = listData.get(--position);
+				detailContent.setText(data.getHistoryContent());
+				detailTitle.setText(data.getHistoryTime());
 				listKnowledge.setVisibility(View.GONE);
 				llKonwdetails.setVisibility(View.VISIBLE);
 				
@@ -264,7 +271,7 @@ public class KnowledgeFragment extends Fragment implements CommonConst {
 			listKnowledge.onRefreshComplete();
 			if(result) {
 				for (KnowledgeBean knowledgeBean : list) {
-					listData.add(new HistoryItemBean(itemNum+"", knowledgeBean.getHeadStr(), knowledgeBean.getShortConent()));
+					listData.add(new HistoryItemBean(itemNum+"", knowledgeBean.getHeadStr(), knowledgeBean.getShortConent(), knowledgeBean.getContent()));
 					++itemNum;
 				}
 				historyAdapter.notifyDataSetChanged();
