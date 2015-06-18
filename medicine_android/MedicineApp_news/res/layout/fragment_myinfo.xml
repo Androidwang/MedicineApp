@@ -302,10 +302,11 @@
                     android:orientation="vertical" >
 
                     <TextView
+                        android:id="@+id/tv_codevalidity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="授权有效期：剩余345天"
+                        android:textSize="20sp"
                         android:textColor="#008aff" />
                 </LinearLayout>
             </LinearLayout>

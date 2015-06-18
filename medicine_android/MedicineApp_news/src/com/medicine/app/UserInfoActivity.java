@@ -2,7 +2,9 @@ package com.medicine.app;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+
 import org.ksoap2.serialization.SoapObject;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -21,6 +23,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.medicine.app.adapter.AbstractSpinerAdapter.IOnItemSelectListener;
 import com.medicine.app.db.database.InsertUserDB;
 import com.medicine.app.model.UserInfoBean;
@@ -406,7 +409,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		// 年份设定为当年的前后20年
 	Calendar cal = Calendar.getInstance();
 	for (int i = 0; i < 60; i++) {
-		dataYear.add("" + (cal.get(Calendar.YEAR) - 20 + i));
+		dataYear.add("" + (cal.get(Calendar.YEAR) - 50 + i));
 	}
 
 	// 12个月
@@ -569,7 +572,15 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		
 		@Override
 		protected void onPostExecute(String result) {
-			icode = result;
+			String[] authorizeAndTime = result.split(";");
+			icode = authorizeAndTime[0];
+			try {
+				String icodeValidity = CommonUtils.DateCompare(authorizeAndTime[1], CommonUtils.getCurrentValidityDate());
+				PreferencesUtils.setIcodeValidity(UserInfoActivity.this, icodeValidity);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 		
 	}

@@ -75,7 +75,34 @@ public class CommonUtils implements CommonConst{
 	       return serial;
 		
 		}
+	
+	
+	
+	/**
+	 * 
+	 * 判断有效期
+	 * @param s1
+	 * @param s2
+	 * @throws Exception
+	 */
+	
+	public static String DateCompare(String s1,String s2) throws Exception 
+	{ 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); //得到指定模范的时间
+		Date d1 = sdf.parse(s1); 
+		Date d2 = sdf.parse(s2);
+		return Math.abs(((d1.getTime() - d2.getTime())/(24*3600*1000))) + "天";
+		
+	}
 
+	
+	// 获取当前时间
+		public static String getCurrentValidityDate() {
+			Date date = new Date(System.currentTimeMillis());
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			return dateFormat.format(date);
+		}
+	
 	/**
 	 * 获取当前网络状态，判断是否可用
 	 * 

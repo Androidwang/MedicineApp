@@ -58,6 +58,7 @@ public class MyInfoFragment extends Fragment {
 	private Button myinfoUpdate;
 	private RadioGroup groupSex;
 	private String manSex = "0";
+	private TextView tvCodevalidity;
 	
 	public MyInfoFragment(List<UserInfoBean> mUserList) {
 		this.mUserList = mUserList;
@@ -77,6 +78,7 @@ public class MyInfoFragment extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		tvCodevalidity = (TextView)getView().findViewById(R.id.tv_codevalidity);
 		myinfoUpdate = (Button)getView().findViewById(R.id.myinfo_updateinfo);
 		rlmyinfoType = (RelativeLayout)getView().findViewById(R.id.rlmyinfo_type);
 		myinfoType = (TextView)getView().findViewById(R.id.myinfo_type);
@@ -94,7 +96,6 @@ public class MyInfoFragment extends Fragment {
 		checkBox = (CheckBox) getView().findViewById(R.id.checkBox1);
 		checkBox.setChecked(PreferencesUtils.getShurtDown(getActivity()));
 		initDataAndSet();
-		getAuthorizeCode();
 		
 		/**
 		 * 
@@ -178,20 +179,6 @@ public class MyInfoFragment extends Fragment {
 		});
 	}
 	
-	/**
-	 * 
-	 * 解密授权码
-	 * 
-	 */
-	private void getAuthorizeCode(){
-		
-		
-		
-		
-		
-		
-		
-	}
 
 	/**
 	 * 从数据库查询用户输入信息
@@ -204,7 +191,6 @@ public class MyInfoFragment extends Fragment {
 		String id = null;
 		String idCode = null;
 		String bornYearMonth = null;
-		
 		for (int i = 0; i < mUserList.size(); i++) {
 			mBean = mUserList.get(i);
 			name = mBean.getName();
@@ -218,8 +204,10 @@ public class MyInfoFragment extends Fragment {
 		myinfo_phone.setText(phone);
 		myinfo_id.setText(id);
 		myinfo_idcode.setText(idCode);
-		System.out.println("idCode"+idCode);
 		spYear.setText(bornYearMonth.substring(0, 4));
+		spMonth.setText(bornYearMonth.substring(4));
+		tvCodevalidity.setText("授权有效期：剩余"+PreferencesUtils.getIcodeValidity(getActivity()));
+		
 		if (sex.equals("0")) {
 			radioMan.setChecked(true);;;
 		}else {
