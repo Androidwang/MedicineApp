@@ -5,13 +5,14 @@ public class HistoryItemBean {
 	private String historyTagNum;
 	private String historyTime;
 	private String historyContent;
-	
-	public HistoryItemBean(String historyTagNum, String historyTime,
+	private String historyShortContent;
+	public HistoryItemBean(String historyTagNum, String historyTime, String historyShortContent,
 			String historyContent) {
 		super();
 		this.historyTagNum = historyTagNum;
 		this.historyTime = historyTime;
 		this.historyContent = historyContent;
+		this.historyShortContent = historyShortContent;
 	}
 	public String getHistoryTagNum() {
 		return historyTagNum;
@@ -30,6 +31,12 @@ public class HistoryItemBean {
 	}
 	public void setHistoryContent(String historyContent) {
 		this.historyContent = historyContent;
+	}
+	public String getHistoryShortContent() {
+		return historyShortContent;
+	}
+	public void setHistoryShortContent(String historyShortContent) {
+		this.historyShortContent = historyShortContent;
 	}
 	
 	
