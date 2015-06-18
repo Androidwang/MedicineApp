@@ -3,13 +3,10 @@ package com.medicine.app.fragment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ksoap2.serialization.SoapObject;
-
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,17 +24,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.medicine.app.R;
 import com.medicine.app.adapter.HistoryListAdapter;
-import com.medicine.app.db.database.HistoryDB;
 import com.medicine.app.db.database.InsertUserDB;
 import com.medicine.app.db.database.KnowledgeDB;
-import com.medicine.app.fragment.HistoryFragment.RefreshDataTask;
-import com.medicine.app.model.HistoryBean;
 import com.medicine.app.model.HistoryItemBean;
 import com.medicine.app.model.KnowledgeBean;
 import com.medicine.app.utils.CommonConst;

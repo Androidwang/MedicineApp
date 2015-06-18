@@ -64,4 +64,22 @@ public class PreferencesUtils {
 				.getDefaultSharedPreferences(context);
 		return preferences.getBoolean("shurtDown", false);
 	}
+	
+	/**
+	 * 授权码有效期
+	 * @param context
+	 * @param icodeValidity
+	 */
+	public static void setIcodeValidity(Context context, String icodeValidity) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		preferences.edit().putString("icodeValidity", icodeValidity).commit();
+	}
+	public static String getIcodeValidity(Context context) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return preferences.getString("icodeValidity", null);
+	}
+	
+	
 }

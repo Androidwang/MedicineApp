@@ -198,12 +198,14 @@
                             android:id="@+id/radio_man"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                           android:textColor="@color/black"
                             android:text="男" />
 
                         <RadioButton
                             android:id="@+id/radio_woman"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                             android:textColor="@color/black"
                             android:text="女" />
                     </RadioGroup>
                 </LinearLayout>
@@ -280,6 +282,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                        android:gravity="center"
+                       android:textColor="@color/black"
                         android:background="@drawable/background_corners" />
 
                     <ImageView
@@ -299,10 +302,11 @@
                     android:orientation="vertical" >
 
                     <TextView
+                        android:id="@+id/tv_codevalidity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
-                        android:text="授权有效期：剩余345天"
+                        android:textSize="20sp"
                         android:textColor="#008aff" />
                 </LinearLayout>
             </LinearLayout>

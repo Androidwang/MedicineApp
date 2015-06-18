@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.ksoap2.serialization.SoapObject;
+
+import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import cn.yunzhisheng.tts.offline.TTSPlayerListener;
 import cn.yunzhisheng.tts.offline.basic.ITTSControl;
 import cn.yunzhisheng.tts.offline.basic.TTSFactory;
+
 import com.medicine.app.R;
 import com.medicine.app.db.database.HistoryDB;
 import com.medicine.app.db.database.InsertUserDB;
@@ -38,6 +41,7 @@ import com.medicine.app.widgets.CustemUseMedicine.onSelectListener;
  * @author wangyang
  *
  */
+
 public class UseMedicineFragment extends Fragment implements  CommonConst{
 	private static final String TAG = "UseMedicineFragment";
 	TextToSpeech mSpeech;
@@ -164,6 +168,7 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 
 		// 初始化语音合成对象
 		mTTSPlayer = TTSFactory.createTTSControl(getActivity(), Config.appKey);
+		mTTSPlayer.setStreamType(AudioManager.STREAM_SYSTEM);
 		
 		// 设置回调监听
 		mTTSPlayer.setTTSListener(new TTSPlayerListener() {
@@ -211,6 +216,8 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
      * 
      * 
      */
+    
+    
     private void initData() {
     	String[] medicalHistorySpinerData = getResources().getStringArray(R.array.date1);
     	data1 = new ArrayList<String>();
@@ -223,7 +230,7 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 			@Override
 			public void onClick(View v) {
 				try {  
-					mTTSPlayer.play("5.0");
+					mTTSPlayer.play("这里是北京天安门");
 					
 		        } catch (Exception e) {  
 		            e.printStackTrace();  

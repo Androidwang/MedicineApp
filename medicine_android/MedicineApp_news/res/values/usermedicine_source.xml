@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-     <!-- 用药界面的数据 -->
+
+    <!-- 用药界面的数据 -->
     <string-array name="date1">
         <item>2.0</item>
         <item>2.3</item>
@@ -40,15 +41,9 @@
         <item>5.7</item>
         <item>5.8</item>
         <item>5.9</item>
-        
-        
-        
         <item>2.2</item>
         <item>2.1</item>
         <item>2.0</item>
-        
-        
-        
         <item>6.1</item>
         <item>6.2</item>
         <item>6.3</item>
@@ -90,8 +85,7 @@
         <item>9.9</item>
         <item>10.0</item>
     </string-array>
-    
-     <string-array name="date2">
+    <string-array name="date2">
         <item>2.0</item>
         <item>2.1</item>
         <item>2.2</item>
@@ -174,8 +168,7 @@
         <item>9.9</item>
         <item>10.0</item>
     </string-array>
-    
-      <string-array name="date3">
+    <string-array name="date3">
         <item>2.0</item>
         <item>2.1</item>
         <item>2.2</item>
@@ -258,4 +251,5 @@
         <item>9.9</item>
         <item>10.0</item>
     </string-array>
+
 </resources>

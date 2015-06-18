@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -73,6 +74,8 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	private RelativeLayout rlinrCheck;
 	private TextView edinrCheck;
 	private String manSex = "0";
+	private String hFlbefore;
+	private String nowPace;
 	private String id;
 	private String icode;
 	private int ANDROID_ACCESS_CXF_WEBSERVICES = 001;
@@ -85,6 +88,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		      System.out.println("请求结果为："+result);
 		    }
 		  };
+		  
 	private RadioGroup radiogroupSex;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -245,7 +249,6 @@ public class UserInfoActivity extends Activity implements CommonConst {
 			public void onClick(View v) {
 				
 				UserInfoBean mInfoBean = new UserInfoBean();
-				PreferencesUtils.setFirstLauncher(UserInfoActivity.this, false);
 				String sName = edName.getText().toString().trim();
 				String sPhonenum = edPhonenum.getText().toString().trim();
 				String sYear = spYear.getText().toString().trim();
@@ -256,28 +259,102 @@ public class UserInfoActivity extends Activity implements CommonConst {
 				String sHFLsrc = edtakeMedicament.getText().toString().trim();
 				String sNowPace = edmedicamentNumber.getText().toString().trim();
 				String sINRTime = edinrCheck.getText().toString().trim();
-				mInfoBean.setID(id);
-				mInfoBean.setICODE(icode);
-				mInfoBean.setStartTime(CommonUtils.getCurrentDate());
-				mInfoBean.setName(sName);
-				mInfoBean.setPhoneNum(sPhonenum);
-				mInfoBean.setSex(manSex);
-				mInfoBean.setAddress(sAddress);
-				mInfoBean.setBornYearMonth(sYear+"-"+sMonth);
-				mInfoBean.setIllSrc(sIllSrc);
-				mInfoBean.setHFLbefore(sHFLbefore);
-				mInfoBean.setHFLsrc(sHFLsrc);
-				mInfoBean.setNowPace(sNowPace);
-				mInfoBean.setINRTime(sINRTime);
-				InsertUserDB.getInstance(UserInfoActivity.this).insertUserInfo(mInfoBean);
-				requestInfo(sName,sPhonenum,sYear,sMonth,sAddress,sIllSrc,sHFLbefore,sHFLsrc,sNowPace,sINRTime);
-				Intent mIntent = new Intent(UserInfoActivity.this,HomeActivity.class);
-				startActivity(mIntent);
-				finish();
+				if(validateUserInfo(sName,sPhonenum,sYear,sMonth,sAddress,sIllSrc,sHFLbefore,sHFLsrc,sNowPace,sINRTime)){
+					PreferencesUtils.setFirstLauncher(UserInfoActivity.this, false);
+					mInfoBean.setID(id);
+					mInfoBean.setICODE(icode);
+					mInfoBean.setStartTime(CommonUtils.getCurrentDate());
+					mInfoBean.setName(sName);
+					mInfoBean.setPhoneNum(sPhonenum);
+					mInfoBean.setSex(manSex);
+					mInfoBean.setAddress(sAddress);
+					mInfoBean.setBornYearMonth(sYear+sMonth);
+					mInfoBean.setIllSrc(sIllSrc);
+					mInfoBean.setHFLbefore(hFlbefore);
+					mInfoBean.setHFLsrc(sHFLsrc);
+					mInfoBean.setNowPace(sNowPace);
+					mInfoBean.setINRTime(sINRTime);
+					InsertUserDB.getInstance(UserInfoActivity.this).insertUserInfo(mInfoBean);
+					if (CommonUtils.isNetworkAvailable(UserInfoActivity.this)) {
+						requestInfo(sName,sPhonenum,sYear,sMonth,sAddress,sIllSrc,sHFLbefore,sHFLsrc,sNowPace,sINRTime);
+						Intent mIntent = new Intent(UserInfoActivity.this,HomeActivity.class);
+						startActivity(mIntent);
+						finish();
+					}
+				}
+				
 			}
 		});
 
 	}
+	/**
+	 *	检查用户输入是否为空
+	 * @param sName
+	 * @param sPhonenum
+	 * @param sYear
+	 * @param sMonth
+	 * @param sAddress
+	 * @param sIllSrc
+	 * @param sHFLbefore
+	 * @param sHFLsrc
+	 * @param sNowPace
+	 * @param sINRTime
+	 * @return
+	 */
+	protected boolean validateUserInfo(String sName, String sPhonenum,
+			String sYear, String sMonth, String sAddress, String sIllSrc,
+			String sHFLbefore, String sHFLsrc, String sNowPace, String sINRTime) {
+		boolean flag = false;
+
+		if (TextUtils.isEmpty(sName)) {
+			edName.requestFocus();
+			CommonUtils.showDialogMessage(UserInfoActivity.this,"输入信息不能为空");
+		} 
+		else if (TextUtils.isEmpty(sPhonenum)) {
+			edPhonenum.requestFocus();
+			CommonUtils.showDialogMessage(UserInfoActivity.this,"输入信息不能为空");
+		} 
+		else if (TextUtils.isEmpty(sYear)) {
+			spYear.requestFocus();
+			CommonUtils.showDialogMessage(UserInfoActivity.this,"输入信息不能为空");
+		} 
+		else if (TextUtils.isEmpty(sMonth)) {
+			spMonth.requestFocus();
+			CommonUtils.showDialogMessage(UserInfoActivity.this,"输入信息不能为空");
+		} 
+		else if (TextUtils.isEmpty(sAddress)) {
+			edAddress.requestFocus();
+			CommonUtils.showDialogMessage(UserInfoActivity.this,"输入信息不能为空");
+		} 
+		
+		else if (TextUtils.isEmpty(sIllSrc)) {
+			edLlhistory.requestFocus();
+			CommonUtils.showDialogMessage(UserInfoActivity.this,"输入信息不能为空");
+		} 
+		else if (TextUtils.isEmpty(sHFLbefore)) {
+			edReceiveTreatment.requestFocus();
+			CommonUtils.showDialogMessage(UserInfoActivity.this,"输入信息不能为空");
+		} 
+
+		else if (TextUtils.isEmpty(sHFLsrc)) {
+			edtakeMedicament.requestFocus();
+			CommonUtils.showDialogMessage(UserInfoActivity.this,"输入信息不能为空");
+		} 
+		
+		else if (TextUtils.isEmpty(sNowPace)) {
+			edmedicamentNumber.requestFocus();
+			CommonUtils.showDialogMessage(UserInfoActivity.this,"输入信息不能为空");
+		} 
+		else if (TextUtils.isEmpty(sINRTime)) {
+			edinrCheck.requestFocus();
+			CommonUtils.showDialogMessage(UserInfoActivity.this,"输入信息不能为空");
+		} 
+		else {
+			flag = true;
+		}
+		return flag;
+	}
+
 	/**
 	 * 
 	 * 请求INFO APi
@@ -298,7 +375,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					 Looper.prepare();
+					  Looper.prepare();
 					  HashMap<String, Object> map  = new HashMap<String, Object>();
 					  map.put("ID", id);
 					  map.put("ICODE", icode);
@@ -306,12 +383,12 @@ public class UserInfoActivity extends Activity implements CommonConst {
 					  map.put("name", sName);
 					  map.put("PhoneNum", sPhonenum);
 					  map.put("Sex", manSex);
-					  map.put("BornYearMonth", sYear+"-"+sMonth);
+					  map.put("BornYearMonth",sYear+sMonth);
 					  map.put("Address", sAddress);
 					  map.put("illSrc", sIllSrc);
 					  map.put("HFLbefore", sHFLbefore);
 					  map.put("HFLsrc", sHFLsrc);
-					  map.put("NowPace",sNowPace);
+					  map.put("NowPace",nowPace);
 					  map.put("INRTime",sINRTime);
 					  SoapObject soapObject = WebService.common(SOAP_USER_INFO, METHOD_USER_INFO, map, NAME_SPACE, END_POINT_SALE);
 					  String result = soapObject.getProperty(0).toString();
@@ -332,7 +409,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		// 年份设定为当年的前后20年
 	Calendar cal = Calendar.getInstance();
 	for (int i = 0; i < 60; i++) {
-		dataYear.add("" + (cal.get(Calendar.YEAR) - 20 + i));
+		dataYear.add("" + (cal.get(Calendar.YEAR) - 50 + i));
 	}
 
 	// 12个月
@@ -428,50 +505,48 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	}
 	private void setCountry1(int pos) {
 		if (pos >= 0 && pos <= medicalHistorySpinerData.length) {
-			// CustemObject value = nameList.get(pos);
-			// workid = String.valueOf((pos+1));
 			edLlhistory.setText(medicalHistorySpinerData[pos]);
 		}
 	}
 	private void setCountry2(int pos) {
 		if (pos >= 0 && pos <= year.length) {
-			// CustemObject value = nameList.get(pos);
-			//workid = String.valueOf((pos+1));
 			spYear.setText(year[pos]);
 		}
 	}
 	private void setCountry3(int pos) {
 		if (pos >= 0 && pos <= month.length) {
-			 //CustemObject value = nameList.get(pos);
-			//workid = String.valueOf((pos+1));
 			spMonth.setText(month[pos]);
 		}
 	}
 	private void setCountry4(int pos) {
 		if (pos >= 0 && pos <= receiveTreatmentSpinerData.length) {
-			 //CustemObject value = nameList.get(pos);
-			//workid = String.valueOf((pos+1));
 			edReceiveTreatment.setText(receiveTreatmentSpinerData[pos]);
+			if (receiveTreatmentSpinerData[pos].equals("是")) {
+				hFlbefore = "1";
+			}
+			else {
+				hFlbefore = "0";
+			}
+			
 		}
 	}
 	private void setCountry5(int pos) {
 		if (pos >= 0 && pos <= takeMedicamentSpinerData.length) {
-			 //CustemObject value = nameList.get(pos);
-			//workid = String.valueOf((pos+1));
 			edtakeMedicament.setText(takeMedicamentSpinerData[pos]);
 		}
 	}
 	private void setCountry6(int pos) {
 		if (pos >= 0 && pos <= receiveTreatmentSpinerData.length) {
-			 //CustemObject value = nameList.get(pos);
-			//workid = String.valueOf((pos+1));
 			edmedicamentNumber.setText(receiveTreatmentSpinerData[pos]);
+			if (receiveTreatmentSpinerData[pos].equals("是")) {
+				nowPace = "1";
+			}else {
+				nowPace = "0";
+			}
 		}
 	}
 	private void setCountry7(int pos) {
 		if (pos >= 0 && pos <= inrCheckSpinerData.length) {
-			 //CustemObject value = nameList.get(pos);
-			//workid = String.valueOf((pos+1));
 			edinrCheck.setText(inrCheckSpinerData[pos]);
 		}
 	}
@@ -481,6 +556,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	 * @author WangLin
 	 *
 	 */
+	
 	class GetAuthorizeTask extends AsyncTask<Void, Void, String> {
 
 		@Override
@@ -496,7 +572,15 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		
 		@Override
 		protected void onPostExecute(String result) {
-			icode = result;
+			String[] authorizeAndTime = result.split(";");
+			icode = authorizeAndTime[0];
+			try {
+				String icodeValidity = CommonUtils.DateCompare(authorizeAndTime[1], CommonUtils.getCurrentValidityDate());
+				PreferencesUtils.setIcodeValidity(UserInfoActivity.this, icodeValidity);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 		
 	}
