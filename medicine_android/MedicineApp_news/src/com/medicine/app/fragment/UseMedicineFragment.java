@@ -61,6 +61,7 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
     private ITTSControl mTTSPlayer;
     private UploadHistoryTask uploadHistoryTask;
     private static final int MESSAGE_UPLOAD = 1;
+    private String advice;
     private  Handler mHandler = new Handler() {
     	@Override
     	public void handleMessage(Message msg) {
@@ -230,7 +231,7 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 			@Override
 			public void onClick(View v) {
 				try {  
-					mTTSPlayer.play("这里是北京天安门");
+					mTTSPlayer.play(tvSuggest.getText().toString());
 					
 		        } catch (Exception e) {  
 		            e.printStackTrace();  
@@ -263,11 +264,16 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 			last = medicine4.defaultSelectData();
 		}
 		String isBlood = "否";
+		boolean blood = false;
 		if(cbBlood.isChecked()) {
 			isBlood = "是";
+			blood = true;
 		}
+		advice = getUseAdvice(Float.parseFloat(low), Float.parseFloat(up), Float.parseFloat(now), Float.parseFloat(last), blood);
 		try {
-			boolean isInsert = HistoryDB.getInstance(getActivity()).insert(new HistoryBean(DateUtils.getNowTime(), low, up, now, last, isBlood, ""));
+			boolean isInsert = HistoryDB.getInstance(getActivity()).insert(new HistoryBean(DateUtils.getNowTime(), low, up, now, last, isBlood, advice));
+			tvSuggest.setText(advice);
+			mTTSPlayer.play("目标INR值"+low+"-"+up+",本次检测INR值"+now+",上次服用量"+last+"mg,给药建议："+advice);
 			if(CommonUtils.isNetworkAvailable(getActivity())) {
 				//TODO 1.请求 Get_HFL_history_IDindex，获取服务器端最后一次上传数据的LastID
 				//TODO 2.查询本地History表中ID>LastID的数据集合List<History>
@@ -341,4 +347,87 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 		}
 		
 	}
+	
+	/**
+	 * 根据参数计算给药建议
+	 * @param low
+	 * @param up
+	 * @param now
+	 * @param last
+	 * @param isBlood
+	 * @return 给药建议
+	 */
+	public String getUseAdvice(float low, float up, float now, float last, boolean isBlood) {
+		int count = HistoryDB.getInstance(getActivity()).getCount();
+		String advice = "";
+		String src = InsertUserDB.getInstance(getActivity()).getColumnValue("HFLsrc");
+		if(last > 6) {
+			advice = "请保持当前服用量，并尽快咨询医生";
+			return advice;
+		}
+		if(now <= (low - 0.5)) {
+			String dose = "请保持当前服用量";
+			if (2 == count) { //第3次使用
+				if("2mg".equals(src)) {
+					float s = (float) (last + 0.5);
+					int n = (int) (s/2);
+					dose = "建议服用剂量为"+s+"mg，即"+n+"片";
+				} else {
+					float s = (float) (last + 0.75);
+					int n = (int) (s/3);
+					dose = "建议服用剂量为"+s+"mg，即"+n+"片";
+				}
+			} 
+			advice = dose+"，并在3天之后复查";
+			return advice;
+		}else if((low-0.5) < now && now <= low) {
+			String time = "";
+			if(0<= count && count <= 1) { //第1~2次使用
+				time = "3天";
+			} else if (2 <= count && count <= 5) { //第3~6次使用
+				time = "1周";
+			} else { //7次以上
+				time = "1个月";
+			}
+			advice = "请保持当前服用量，并在"+time+"之后复查";
+			return advice;
+		}else if(low < now && now < (up + 0.5)) {
+			String dose = "请保持当前服用量";
+			if (2 == count) { //第3次使用
+				if("2mg".equals(src)) {
+					float s = (float) (last - 0.5);
+					int n = (int) (s/2);
+					dose = "建议服用剂量为"+s+"mg，即"+n+"片";
+				} else {
+					float s = (float) (last - 0.75);
+					int n = (int) (s/3);
+					dose = "建议服用剂量为"+s+"mg，即"+n+"片";
+				}
+			} 
+			advice = dose+"，并在3天之后复查";
+			return advice;
+		}else if((up + 0.5) <= now && now <= 5) {
+			String dose = "请保持当前服用量";
+			if (2 == count) { //第3次使用
+				if("2mg".equals(src)) {
+					float s = (float) (last - 0.5);
+					int n = (int) (s/2);
+					dose = "服用剂量调整为"+s+"mg，即"+n+"片";
+				} else {
+					float s = (float) (last - 0.75);
+					int n = (int) (s/3);
+					dose = "服用剂量调整为"+s+"mg，即"+n+"片";
+				}
+			} 
+			advice = "停药1天，"+dose+"，并在3天之后复查";
+			return advice;
+		}else if(now > 5 || isBlood) {
+			advice = "请立即停药，并尽快咨询医生";
+			return advice;
+		}else{
+			advice = "请保持当前服用量，并尽快咨询医生";
+			return advice;
+		}
+	}
+
 }
