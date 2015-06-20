@@ -134,7 +134,7 @@ public class HistoryFragment extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				HistoryItemBean data = listData.get(--position);
 				detailTitle.setText(data.getHistoryTime());
-				detailContent.setText(data.getHistoryContent());
+				detailContent.setText(data.getHistoryContent()+"\n给药建议："+data.getHistoryShortContent());
 				listHistory.setVisibility(View.GONE);
 				llHistory.setVisibility(View.VISIBLE);
 
