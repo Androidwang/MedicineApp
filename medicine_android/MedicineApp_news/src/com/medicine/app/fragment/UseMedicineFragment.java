@@ -59,7 +59,6 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
     private String now;
     private String last;
     private ITTSControl mTTSPlayer;
-    private UploadHistoryTask uploadHistoryTask;
     private static final int MESSAGE_UPLOAD = 1;
     private String advice;
     private  Handler mHandler = new Handler() {
@@ -93,7 +92,6 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
         medicine4  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine04);
         cbBlood = (CheckBox) getView().findViewById(R.id.cb_blood);
         ivSubmit = (ImageView) getView().findViewById(R.id.iv_submit);
-        uploadHistoryTask = new UploadHistoryTask();
         initData();
         initSpeechData();
         
@@ -251,6 +249,8 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 	 * 给药计算
 	 */
 	public void submit() {
+		ivSubmit.setImageResource(R.drawable.usemedicine_07);
+		ivSubmit.setEnabled(false);
 		if(low == null) {
 			low = medicine1.defaultSelectData();
 		}
@@ -282,23 +282,33 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 
 					@Override
 					protected String doInBackground(Void... params) {
+						String result = null;
 						HashMap<String, Object> map = new HashMap<String, Object>();
-						map.put("ID", InsertUserDB.getInstance(getActivity()).getColumnValue("ID"));
-						map.put("IDIndex", HistoryDB.getInstance(getActivity()).getLastDataId());
-						SoapObject soapObject = WebService.common(SOAP_HFL_HISTORY_IDINDEX, METHOD_HFL_HISTORY_IDINDEX, map, NAME_SPACE, END_POINT_SALE);
-						String result = soapObject.getProperty(0).toString();
-						Log.d(TAG, "Get_HFL_history_IDindex return:"+result);
+						try {
+							map.put("ID", InsertUserDB.getInstance(getActivity()).getColumnValue("ID"));
+							map.put("IDIndex", HistoryDB.getInstance(getActivity()).getLastDataId());
+							SoapObject soapObject = WebService.common(SOAP_HFL_HISTORY_IDINDEX, METHOD_HFL_HISTORY_IDINDEX, map, NAME_SPACE, END_POINT_SALE);
+							result = soapObject.getProperty(0).toString();
+							Log.d(TAG, "Get_HFL_history_IDindex return:"+result);
+						} catch (Exception e) {
+							Log.e(TAG, "Get_HFL_history_IDindex doInBackground error", e);
+						}
+						
 						return result;
 					}
 					
 					@Override
 					protected void onPostExecute(String result) {
-						Message msg = new Message();
-						msg.what = MESSAGE_UPLOAD;
-						Bundle bundle = new Bundle();
-						bundle.putString("lastUploadId", result);
-						msg.setData(bundle);
-						mHandler.sendMessage(msg);
+						try {
+							Message msg = new Message();
+							msg.what = MESSAGE_UPLOAD;
+							Bundle bundle = new Bundle();
+							bundle.putString("lastUploadId", result);
+							msg.setData(bundle);
+							mHandler.sendMessage(msg);
+						} catch (Exception e) {
+							Log.e(TAG, "Get_HFL_history_IDindex onPostExecute error", e);
+						}
 					}
 				}.execute();
 			}
@@ -346,6 +356,16 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 			return null;
 		}
 		
+		@Override
+		protected void onPostExecute(Void result) {
+			try {
+				ivSubmit.setEnabled(true);
+				ivSubmit.setImageResource(R.drawable.usemedicine_06);
+			} catch (Exception e) {
+				Log.e(TAG, "UploadHistoryTask onPostExecute error", e);
+			}
+		}
+		
 	}
 	
 	/**
@@ -371,11 +391,11 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 				if("2mg".equals(src)) {
 					float s = (float) (last + 0.5);
 					int n = (int) (s/2);
-					dose = "建议服用剂量为"+s+"mg，即"+n+"片";
+					dose = "建议服用剂量为"+s+"毫克，即"+n+"片";
 				} else {
 					float s = (float) (last + 0.75);
 					int n = (int) (s/3);
-					dose = "建议服用剂量为"+s+"mg，即"+n+"片";
+					dose = "建议服用剂量为"+s+"毫克，即"+n+"片";
 				}
 			} 
 			advice = dose+"，并在3天之后复查";
@@ -397,11 +417,11 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 				if("2mg".equals(src)) {
 					float s = (float) (last - 0.5);
 					int n = (int) (s/2);
-					dose = "建议服用剂量为"+s+"mg，即"+n+"片";
+					dose = "建议服用剂量为"+s+"毫克，即"+n+"片";
 				} else {
 					float s = (float) (last - 0.75);
 					int n = (int) (s/3);
-					dose = "建议服用剂量为"+s+"mg，即"+n+"片";
+					dose = "建议服用剂量为"+s+"毫克，即"+n+"片";
 				}
 			} 
 			advice = dose+"，并在3天之后复查";
@@ -412,11 +432,11 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 				if("2mg".equals(src)) {
 					float s = (float) (last - 0.5);
 					int n = (int) (s/2);
-					dose = "服用剂量调整为"+s+"mg，即"+n+"片";
+					dose = "服用剂量调整为"+s+"毫克，即"+n+"片";
 				} else {
 					float s = (float) (last - 0.75);
 					int n = (int) (s/3);
-					dose = "服用剂量调整为"+s+"mg，即"+n+"片";
+					dose = "服用剂量调整为"+s+"毫克，即"+n+"片";
 				}
 			} 
 			advice = "停药1天，"+dose+"，并在3天之后复查";
