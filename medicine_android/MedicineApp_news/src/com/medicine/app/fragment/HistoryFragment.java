@@ -50,7 +50,6 @@ public class HistoryFragment extends Fragment {
 	private int count = 0;
 	private int currentPage = 0;
 	private static final int LIMIT = 4;
-	private RefreshDataTask refreshDataTask;
 	private int itemNum = 1;
 	private static final int MESSAGE_LOAD = 2;
 	private Handler handler = new Handler() {
@@ -97,7 +96,6 @@ public class HistoryFragment extends Fragment {
 				llHistory.setVisibility(View.GONE);
 			}
 		});
-		refreshDataTask = new RefreshDataTask();
 		initData();
 		setData();
 
@@ -119,8 +117,7 @@ public class HistoryFragment extends Fragment {
 		Log.d(TAG, "page num:"+page);
 		tvNum.setText("共有记录"+count+"条");
 		listData = new ArrayList<HistoryItemBean>();
-		refreshDataTask = new RefreshDataTask();
-		refreshDataTask.execute();
+		new RefreshDataTask().execute();
 	}
 
 	/**
@@ -208,14 +205,18 @@ public class HistoryFragment extends Fragment {
 		
 		@Override
 		protected void onPostExecute(Boolean result) {
-			listHistory.onRefreshComplete();
-			if(result) {
-				for (HistoryBean historyBean : list) {
-					String str = "目标INR值"+historyBean.getLow()+"-"+historyBean.getUp()+"，本次检测INR值"+historyBean.getNow()+"，检测前华法林用量"+historyBean.getLast()+"mg。";
-					listData.add(new HistoryItemBean(itemNum+"", historyBean.getTime(), historyBean.getRecord(), str));
-					++itemNum;
+			try {
+				listHistory.onRefreshComplete();
+				if(result) {
+					for (HistoryBean historyBean : list) {
+						String str = "目标INR值"+historyBean.getLow()+"-"+historyBean.getUp()+"，本次检测INR值"+historyBean.getNow()+"，检测前华法林用量"+historyBean.getLast()+"mg。";
+						listData.add(new HistoryItemBean(itemNum+"", historyBean.getTime(), historyBean.getRecord(), str));
+						++itemNum;
+					}
+					historyAdapter.notifyDataSetChanged();
 				}
-				historyAdapter.notifyDataSetChanged();
+			} catch (Exception e) {
+				Log.e(TAG, "RefreshDataTask onPostExecute error", e);
 			}
 		}
 		

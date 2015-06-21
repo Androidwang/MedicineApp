@@ -49,7 +49,6 @@ public class KnowledgeFragment extends Fragment implements CommonConst {
 	private LinearLayout llKonwdetails;
 	private Button konwdetailsBack;
 	private Button btnSync; // 知识同步按钮
-	private SyncDataTask syncDataTask;
 	private TextView tvNum;
 	private TextView detailTitle;
 	private TextView detailContent;
@@ -115,8 +114,7 @@ public class KnowledgeFragment extends Fragment implements CommonConst {
 			
 			@Override
 			public void onClick(View v) {
-				syncDataTask = new SyncDataTask();
-				syncDataTask.execute();
+				new SyncDataTask().execute();
 			}
 		});
 		
@@ -207,14 +205,20 @@ public class KnowledgeFragment extends Fragment implements CommonConst {
 
 		@Override
 		protected String doInBackground(Void... params) {
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("ID", InsertUserDB.getInstance(getActivity()).getColumnValue("ID"));
-			map.put("KNO_Start_ID", KnowledgeDB.getInstance(getActivity()).getLastDataId());
-			map.put("Count", "20");
-			SoapObject soapObject = WebService.common(SOAP_TB_KNO_INFO, METHOD_TB_KNO_INFO, map, NAME_SPACE, END_POINT_SALE);
-			String result = soapObject.getProperty(0).toString();
-		    Log.d("SyncDataTask", result+"");
-			return result;
+			try {
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				map.put("ID", InsertUserDB.getInstance(getActivity()).getColumnValue("ID"));
+				map.put("KNO_Start_ID", KnowledgeDB.getInstance(getActivity()).getLastDataId());
+				map.put("Count", "20");
+				SoapObject soapObject = WebService.common(SOAP_TB_KNO_INFO, METHOD_TB_KNO_INFO, map, NAME_SPACE, END_POINT_SALE);
+				String result = soapObject.getProperty(0).toString();
+			    Log.d("SyncDataTask", result+"");
+				return result;
+			} catch (Exception e) {
+				Log.e(TAG, "SyncDataTask doInBackground error", e);
+				return null;
+			}
+			
 		}
 		
 		@Override
@@ -268,13 +272,17 @@ public class KnowledgeFragment extends Fragment implements CommonConst {
 		
 		@Override
 		protected void onPostExecute(Boolean result) {
-			listKnowledge.onRefreshComplete();
-			if(result) {
-				for (KnowledgeBean knowledgeBean : list) {
-					listData.add(new HistoryItemBean(itemNum+"", knowledgeBean.getHeadStr(), knowledgeBean.getShortConent(), knowledgeBean.getContent()));
-					++itemNum;
+			try {
+				listKnowledge.onRefreshComplete();
+				if(result) {
+					for (KnowledgeBean knowledgeBean : list) {
+						listData.add(new HistoryItemBean(itemNum+"", knowledgeBean.getHeadStr(), knowledgeBean.getShortConent(), knowledgeBean.getContent()));
+						++itemNum;
+					}
+					historyAdapter.notifyDataSetChanged();
 				}
-				historyAdapter.notifyDataSetChanged();
+			} catch (Exception e) {
+				Log.e(TAG, "RefreshDataTask onPostExecute error", e);
 			}
 		}
 		
