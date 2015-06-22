@@ -226,6 +226,7 @@ public abstract class LoadingLayout extends FrameLayout implements ILoadingLayou
 	public final void pullToRefresh() {
 		if (null != mHeaderText) {
 			mHeaderText.setText(mPullLabel);
+			
 		}
 
 		// Now call the callback
