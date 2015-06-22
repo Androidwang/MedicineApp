@@ -371,7 +371,13 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 		try {
 			boolean isInsert = HistoryDB.getInstance(getActivity()).insert(new HistoryBean(DateUtils.getNowTime(), low, up, now, last, isBlood, advice));
 			tvSuggest.setText(advice);
-			mTTSPlayer.play("目标INR值"+low+"-"+up+",本次检测INR值"+now+",上次服用量"+last+"毫克,给药建议："+advice);
+			String bloodStr = "";
+			if(blood) {
+				bloodStr = "有出血症状";
+			} else {
+				bloodStr = "无出血症状";
+			}
+			mTTSPlayer.play("目标INR值"+low+"-"+up+",本次检测INR值"+now+",上次服用量"+last+"毫克,"+bloodStr+",给药建议："+advice);
 			if(CommonUtils.isNetworkAvailable(getActivity())) {
 				//TODO 1.请求 Get_HFL_history_IDindex，获取服务器端最后一次上传数据的LastID
 				//TODO 2.查询本地History表中ID>LastID的数据集合List<History>
@@ -479,6 +485,10 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 		int count = HistoryDB.getInstance(getActivity()).getCount();
 		String advice = "";
 		String src = InsertUserDB.getInstance(getActivity()).getColumnValue("HFLsrc");
+		if(now > 5 || isBlood) {
+			advice = "请立即停药，并尽快咨询医生";
+			return advice;
+		}
 		if(last > 6) {
 			advice = "请保持当前服用量，并尽快咨询医生";
 			return advice;
@@ -538,9 +548,6 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 				}
 			} 
 			advice = "停药1天，"+dose+"，并在3天之后复查";
-			return advice;
-		}else if(now > 5 || isBlood) {
-			advice = "请立即停药，并尽快咨询医生";
 			return advice;
 		}else{
 			advice = "请保持当前服用量，并尽快咨询医生";
