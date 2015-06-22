@@ -81,5 +81,19 @@ public class PreferencesUtils {
 		return preferences.getString("icodeValidity", null);
 	}
 	
-	
+	/**
+	 * 2mg/片或3mg/片，服用剂型，目前只有2种
+	 * @param context
+	 * @param icodeValidity
+	 */
+	public static void setHFLsrc(Context context, String hFLsrc) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		preferences.edit().putString("hFLsrc", hFLsrc).commit();
+	}
+	public static String getHFLsrc(Context context) {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		return preferences.getString("hFLsrc", null);
+	}
 }

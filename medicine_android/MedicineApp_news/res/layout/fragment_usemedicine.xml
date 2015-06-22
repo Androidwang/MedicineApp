@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="#EDF0F5"
     android:gravity="center"
     android:orientation="vertical" >
@@ -10,8 +10,6 @@
         android:id="@+id/line_01"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
         android:layout_marginTop="10dp"
         android:orientation="vertical" >
 
@@ -25,7 +23,7 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:gravity="center"
                 android:orientation="vertical" >
 
@@ -38,31 +36,70 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/usemedicine_bg_corners"
-                    android:gravity="center"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal" >
 
-                    <com.medicine.app.widgets.CustemUseMedicine
-                        android:id="@+id/cu_medicine01"
+                    <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
                         android:layout_weight="1"
+                        android:background="@drawable/usemedicine_bg_corners"
                         android:gravity="center"
-                        android:text="——" />
+                        android:orientation="horizontal" >
 
-                    <com.medicine.app.widgets.CustemUseMedicine
-                        android:id="@+id/cu_medicine02"
+                        <ImageButton
+                            android:id="@+id/bt_usemedicine_add1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/usemedicine_02" />
+
+                        <TextView
+                            android:id="@+id/tv_usemedicine_num1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                             android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:text="——" />
+
+                        <ImageButton
+                            android:id="@+id/bt_usemedicine_min1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/usemedicine_03" />
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/usemedicine_bg_corners"
+                        android:gravity="center"
+                        android:orientation="horizontal" >
+
+                        <ImageButton
+                            android:id="@+id/bt_usemedicine_add2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/usemedicine_02" />
+
+                        <TextView
+                            android:id="@+id/tv_usemedicine_num2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:text="——" />
+
+                        <ImageButton
+                            android:id="@+id/bt_usemedicine_min2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/usemedicine_03" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -88,10 +125,26 @@
                     android:gravity="center"
                     android:orientation="horizontal" >
 
-                    <com.medicine.app.widgets.CustemUseMedicine
-                        android:id="@+id/cu_medicine03"
+                    <ImageButton
+                        android:id="@+id/bt_usemedicine_add3"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/usemedicine_02" />
+
+                    <TextView
+                        android:id="@+id/tv_usemedicine_num3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:text="——" />
+
+                    <ImageButton
+                        android:id="@+id/bt_usemedicine_min3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/usemedicine_03" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -109,27 +162,41 @@
                     android:text="检测前华法林用量"
                     android:textColor="@color/black" />
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/usemedicine_bg_corners" >
+                    android:background="@drawable/usemedicine_bg_corners"
+                    android:gravity="center" >
 
-                    <com.medicine.app.widgets.CustemUseMedicine
-                        android:id="@+id/cu_medicine04"
-                        android:layout_width="match_parent"
+                    <ImageButton
+                        android:id="@+id/bt_usemedicine_add4"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true" />
+                        android:background="@drawable/usemedicine_02" />
+
+                    <TextView
+                        android:id="@+id/tv_usemedicine_num4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:text="——" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginRight="20dp"
+                        android:layout_marginRight="10dp"
                         android:text="mg"
+                        android:layout_marginLeft="5dp"
                         android:textColor="@color/black" />
-                </RelativeLayout>
+
+                    <ImageButton
+                         android:id="@+id/bt_usemedicine_min4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/usemedicine_03" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
@@ -146,6 +213,7 @@
                 android:layout_gravity="left"
                 android:text="是否有出血症状（牙龈出血、血尿、血便等任何出血症状）"
                 android:textColor="@color/black"
+                android:layout_marginLeft="10dp"
                 android:textSize="12sp" />
 
             <ImageView
@@ -172,8 +240,7 @@
                     android:id="@+id/tv_suggest"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#666666"
-                    android:text="调整剂量-1my,请服用2mg,并于3天后复查INR" />
+                    android:textColor="#666666" />
 
                 <TextView
                     android:layout_width="wrap_content"

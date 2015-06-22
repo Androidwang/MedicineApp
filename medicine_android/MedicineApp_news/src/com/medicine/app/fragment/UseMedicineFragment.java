@@ -1,5 +1,5 @@
 package com.medicine.app.fragment;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,9 +34,8 @@ import com.medicine.app.utils.CommonConst;
 import com.medicine.app.utils.CommonUtils;
 import com.medicine.app.utils.Config;
 import com.medicine.app.utils.DateUtils;
+import com.medicine.app.utils.PreferencesUtils;
 import com.medicine.app.webservice.WebService;
-import com.medicine.app.widgets.CustemUseMedicine;
-import com.medicine.app.widgets.CustemUseMedicine.onSelectListener;
 /**
  * 用药界面
  * @author wangyang
@@ -47,13 +47,8 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 	TextToSpeech mSpeech;
 	private ImageView speakTextview;
 	private TextView tvSuggest;
-	private List<String> data1;
 	private CheckBox cbBlood;
 	private ImageView ivSubmit;
-	private CustemUseMedicine medicine1;
-    private CustemUseMedicine medicine2;
-    private CustemUseMedicine medicine3;
-    private CustemUseMedicine medicine4;
     private String low;
     private String up;
     private String now;
@@ -74,6 +69,24 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 			}
     	}
     };
+	private ImageButton btUsemedicineAdd1;
+	private ImageButton btUsemedicineAdd2;
+	private ImageButton btUsemedicineAdd3;
+	private ImageButton btUsemedicineAdd4;
+	private ImageButton btUsemedicineMin1;
+	private ImageButton btUsemedicineMin2;
+	private ImageButton btUsemedicineMin3;
+	private ImageButton btUsemedicineMin4;
+	private TextView tvUsemedicineNum1;
+	private TextView tvUsemedicineNum2;
+	private TextView tvUsemedicineNum3;
+	private TextView tvUsemedicineNum4;
+	
+	private double sum1 = 0.0;
+	private double sum2 = 0.0;
+	private double sum3 = 0.0;
+	private double sum4 = 0.0;
+	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_usemedicine, container, false);
@@ -84,70 +97,164 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        btUsemedicineAdd1 = (ImageButton)getView().findViewById(R.id.bt_usemedicine_add1);
+        btUsemedicineAdd2 = (ImageButton)getView().findViewById(R.id.bt_usemedicine_add2);
+        btUsemedicineAdd3 = (ImageButton)getView().findViewById(R.id.bt_usemedicine_add3);
+        btUsemedicineAdd4 = (ImageButton)getView().findViewById(R.id.bt_usemedicine_add4);
+        btUsemedicineMin1 = (ImageButton)getView().findViewById(R.id.bt_usemedicine_min1);
+        btUsemedicineMin2 = (ImageButton)getView().findViewById(R.id.bt_usemedicine_min2);
+        btUsemedicineMin3 = (ImageButton)getView().findViewById(R.id.bt_usemedicine_min3);
+        btUsemedicineMin4 = (ImageButton)getView().findViewById(R.id.bt_usemedicine_min4);
+        
+        tvUsemedicineNum1 = (TextView)getView().findViewById(R.id.tv_usemedicine_num1);
+        tvUsemedicineNum2 = (TextView)getView().findViewById(R.id.tv_usemedicine_num2);
+        tvUsemedicineNum3 = (TextView)getView().findViewById(R.id.tv_usemedicine_num3);
+        tvUsemedicineNum4 = (TextView)getView().findViewById(R.id.tv_usemedicine_num4);
+        
+        tvUsemedicineNum1.setText(sum1+"");
+        tvUsemedicineNum2.setText(sum2+"");
+        tvUsemedicineNum3.setText(sum3+"");
+        tvUsemedicineNum4.setText(sum4+"");
+        
+        
         speakTextview = (ImageView)getView().findViewById(R.id.speak_textview);
         tvSuggest = (TextView)getView().findViewById(R.id.tv_suggest);
-        medicine1  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine01);
-        medicine2  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine02);
-        medicine3  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine03);
-        medicine4  = (CustemUseMedicine)getView().findViewById(R.id.cu_medicine04);
         cbBlood = (CheckBox) getView().findViewById(R.id.cb_blood);
         ivSubmit = (ImageView) getView().findViewById(R.id.iv_submit);
+        
         initData();
         initSpeechData();
         
+        /**
+         * 
+         * 加的处理
+         */
+        btUsemedicineAdd1.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (0.0<=sum1 && sum1 < 10) {
+					sum1 = sum1 + 0.1;
+					BigDecimal bd = new BigDecimal(sum1);
+					sum1 = bd.setScale(1,BigDecimal.ROUND_HALF_UP).doubleValue();
+					tvUsemedicineNum1.setText(sum1+"");
+					low = sum1 +"";
+					
+				}
+			}
+		});
+        btUsemedicineAdd2.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (0.0<= sum2 && sum2 < 10) {
+					sum2 = sum2 + 0.1;
+					BigDecimal bd = new BigDecimal(sum2);
+					sum2 = bd.setScale(1,BigDecimal.ROUND_HALF_UP).doubleValue();
+					tvUsemedicineNum2.setText(sum2 +"");
+					up = sum2+"";
+					
+				}
+			}
+		});
+        btUsemedicineAdd3.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (0.0<=sum3 && sum3 < 10) {
+					sum3 = sum3 + 0.1;
+					BigDecimal bd = new BigDecimal(sum3);
+					sum3 = bd.setScale(1,BigDecimal.ROUND_HALF_UP).doubleValue();
+					tvUsemedicineNum3.setText(sum3 + "");
+					now = sum3 + "";
+					
+				}
+			}
+		});
+        btUsemedicineAdd4.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (0.0 <= sum4 && sum4 < 10) {
+					if (PreferencesUtils.getHFLsrc(getActivity()).equals("3mg/片")) {
+						sum4 = sum4 + 0.75;
+						BigDecimal bd = new BigDecimal(sum4);
+						sum4 = bd.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+					}else {
+						sum4 = sum4 + 0.5;
+						BigDecimal bd = new BigDecimal(sum4);
+						sum4 = bd.setScale(1,BigDecimal.ROUND_HALF_UP).doubleValue();
+					}
+					tvUsemedicineNum4.setText(sum4+"");
+					last = sum4+"";
+					
+				}
+			}
+		});
         
-    	medicine1.setData(data1);
-    	medicine1.setOnSelectListener(new onSelectListener()
-		{
-
+        /**
+         * 
+         * 减的处理
+         */
+        btUsemedicineMin1.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onSelect(String text)
-			{
-				low = text;
-				Toast.makeText(getActivity(), "选择了 " + text + " 分",
-						Toast.LENGTH_SHORT).show();
+			public void onClick(View v) {
+				if (0.0 < sum1 && sum1 < 10 && sum1 != -0.1) {
+					sum1 = sum1 - 0.1;
+					BigDecimal bd = new BigDecimal(sum1);
+					sum1 = bd.setScale(1,BigDecimal.ROUND_HALF_UP).doubleValue();
+					tvUsemedicineNum1.setText(sum1+"");
+					low = sum1 +"";
+					
+				}
 			}
-		});  
+		});
         
-    	medicine2.setData(data1);
-    	medicine2.setOnSelectListener(new onSelectListener()
-		{
-
+        btUsemedicineMin2.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onSelect(String text)
-			{
-				up = text;
-				Toast.makeText(getActivity(), "选择了 " + text + " 分",
-						Toast.LENGTH_SHORT).show();
+			public void onClick(View v) {
+				
+				if (0.0 < sum2 && sum2 < 10) {
+					sum2 = sum2 - 0.1;
+					BigDecimal bd = new BigDecimal(sum2);
+					sum2 = bd.setScale(1,BigDecimal.ROUND_HALF_UP).doubleValue();
+					tvUsemedicineNum2.setText(sum2+"");
+					up = sum2+"";
+				}
+				
+				
+				
 			}
-		});  
+		});
+        btUsemedicineMin3.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (0.0 < sum3 && sum3 < 10) {
+					sum3 = sum3 - 0.1;
+					BigDecimal bd = new BigDecimal(sum3);
+					sum3 = bd.setScale(1,BigDecimal.ROUND_HALF_UP).doubleValue();
+					tvUsemedicineNum3.setText(sum3 +"");
+					now = sum3 +"";
+					
+				}
+			}
+		});
         
-    	medicine3.setData(data1);
-    	medicine3.setOnSelectListener(new onSelectListener()
-		{
-
+        btUsemedicineMin4.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onSelect(String text)
-			{
-				now = text;
-				Toast.makeText(getActivity(), "选择了 " + text + " 分",
-						Toast.LENGTH_SHORT).show();
+			public void onClick(View v) {
+				if (0.00 <sum4 && sum4 < 10) {
+					if (PreferencesUtils.getHFLsrc(getActivity()).equals("3mg/片")) {
+						sum4 = sum4 - 0.75;	
+						BigDecimal bd = new BigDecimal(sum4);
+						sum4 = bd.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+					}else {
+						sum4 = sum4 - 0.5;
+						BigDecimal bd = new BigDecimal(sum4);
+						sum4 = bd.setScale(1,BigDecimal.ROUND_HALF_UP).doubleValue();
+					}
+					tvUsemedicineNum4.setText(sum4+"");
+					last = sum4 + "";
+					
+				}
 			}
-		});  
-    	medicine4.setData(data1);
-    	medicine4.setOnSelectListener(new onSelectListener()
-		{
-
-			@Override
-			public void onSelect(String text)
-			{
-				last = text;
-				Toast.makeText(getActivity(), "选择了 " + text + " 分",
-						Toast.LENGTH_SHORT).show();
-			}
-		});  
-    	
-    	
+		});
     	ivSubmit.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -156,15 +263,12 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 				
 			}
 		});
-        
     }
     
 	/**
 	 * 初始化本地离线TTS
 	 */
     private void initSpeechData() {
-		
-
 		// 初始化语音合成对象
 		mTTSPlayer = TTSFactory.createTTSControl(getActivity(), Config.appKey);
 		mTTSPlayer.setStreamType(AudioManager.STREAM_SYSTEM);
@@ -218,12 +322,6 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
     
     
     private void initData() {
-    	String[] medicalHistorySpinerData = getResources().getStringArray(R.array.date1);
-    	data1 = new ArrayList<String>();
-    	for (int i = 0; i < medicalHistorySpinerData.length; i++) {
-    		data1.add(medicalHistorySpinerData[i]);
-		}
-    	
 		 speakTextview.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -252,16 +350,16 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 		ivSubmit.setImageResource(R.drawable.usemedicine_07);
 		ivSubmit.setEnabled(false);
 		if(low == null) {
-			low = medicine1.defaultSelectData();
+			low = tvUsemedicineNum1.getText().toString();
 		}
 		if(up == null) {
-			up = medicine2.defaultSelectData();
+			up = tvUsemedicineNum2.getText().toString();
 		}
 		if(now == null) {
-			now = medicine3.defaultSelectData();
+			now = tvUsemedicineNum3.getText().toString();
 		}
 		if(last == null) {
-			last = medicine4.defaultSelectData();
+			last = tvUsemedicineNum4.getText().toString();
 		}
 		String isBlood = "否";
 		boolean blood = false;
@@ -273,7 +371,7 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 		try {
 			boolean isInsert = HistoryDB.getInstance(getActivity()).insert(new HistoryBean(DateUtils.getNowTime(), low, up, now, last, isBlood, advice));
 			tvSuggest.setText(advice);
-			mTTSPlayer.play("目标INR值"+low+"-"+up+",本次检测INR值"+now+",上次服用量"+last+"mg,给药建议："+advice);
+			mTTSPlayer.play("目标INR值"+low+"-"+up+",本次检测INR值"+now+",上次服用量"+last+"毫克,给药建议："+advice);
 			if(CommonUtils.isNetworkAvailable(getActivity())) {
 				//TODO 1.请求 Get_HFL_history_IDindex，获取服务器端最后一次上传数据的LastID
 				//TODO 2.查询本地History表中ID>LastID的数据集合List<History>

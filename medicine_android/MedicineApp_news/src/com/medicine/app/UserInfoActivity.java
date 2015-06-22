@@ -84,7 +84,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 		    @Override
 		    public void handleMessage(Message msg) {
 		      String result = (String) msg.getData().get("result");
-		      String obj = (String) msg.obj;//
+		      String obj = (String) msg.obj; //
 		      System.out.println("请求结果为："+result);
 		    }
 		  };
@@ -372,37 +372,45 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	protected void requestInfo(final String sName, final String sPhonenum, final String sYear,
 			final String sMonth, final String sAddress, final String sIllSrc,
 			final String sHFLbefore, final String sHFLsrc, final String sNowPace, final String sINRTime) {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					  Looper.prepare();
-					  HashMap<String, Object> map  = new HashMap<String, Object>();
-					  map.put("ID", id);
-					  map.put("ICODE", icode);
-					  map.put("StartTime", CommonUtils.getCurrentDate());
-					  map.put("name", sName);
-					  map.put("PhoneNum", sPhonenum);
-					  map.put("Sex", manSex);
-					  map.put("BornYearMonth",sYear+sMonth);
-					  map.put("Address", sAddress);
-					  map.put("illSrc", sIllSrc);
-					  map.put("HFLbefore", sHFLbefore);
-					  map.put("HFLsrc", sHFLsrc);
-					  map.put("NowPace",nowPace);
-					  map.put("INRTime",sINRTime);
-					  SoapObject soapObject = WebService.common(SOAP_USER_INFO, METHOD_USER_INFO, map, NAME_SPACE, END_POINT_SALE);
-					  String result = soapObject.getProperty(0).toString();
-					  Log.d("result", result+"");
-					  Message message = new Message();
-					  Bundle bundle = new Bundle();
-					  bundle.putString("result", result);
-					  message.what = ANDROID_ACCESS_CXF_WEBSERVICES;//设置消息标示
-					  message.obj = "zxn";
-					  message. setData(bundle);//消息内容
-					  handler.sendMessage(message);//发送消息
-					  Looper.loop();
+				try {
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							  Looper.prepare();
+							  HashMap<String, Object> map  = new HashMap<String, Object>();
+							  map.put("ID", id);
+							  map.put("ICODE", icode);
+							  map.put("StartTime", CommonUtils.getCurrentDate());
+							  map.put("name", sName);
+							  map.put("PhoneNum", sPhonenum);
+							  map.put("Sex", manSex);
+							  map.put("BornYearMonth",sYear+sMonth);
+							  map.put("Address", sAddress);
+							  map.put("illSrc", sIllSrc);
+							  map.put("HFLbefore", sHFLbefore);
+							  map.put("HFLsrc", sHFLsrc);
+							  map.put("NowPace",nowPace);
+							  map.put("INRTime",sINRTime);
+							  SoapObject soapObject = WebService.common(SOAP_USER_INFO, METHOD_USER_INFO, map, NAME_SPACE, END_POINT_SALE);
+							  String result = soapObject.getProperty(0).toString();
+							  Log.d("result", result+"");
+							  Message message = new Message();
+							  Bundle bundle = new Bundle();
+							  bundle.putString("result", result);
+							  message.what = ANDROID_ACCESS_CXF_WEBSERVICES;//设置消息标示
+							  message.obj = "zxn";
+							  message. setData(bundle);//消息内容
+							  handler.sendMessage(message);//发送消息
+							  Looper.loop();
+						}
+					}).start();
+					
+					
+				} catch (Exception e) {
+					Log.e("UserInfoActivity","register requeset"+e.toString());
 				}
-			}).start();
+		
+		
 	}
 
 	private void initData() {
@@ -533,6 +541,7 @@ public class UserInfoActivity extends Activity implements CommonConst {
 	private void setCountry5(int pos) {
 		if (pos >= 0 && pos <= takeMedicamentSpinerData.length) {
 			edtakeMedicament.setText(takeMedicamentSpinerData[pos]);
+			PreferencesUtils.setHFLsrc(UserInfoActivity.this, takeMedicamentSpinerData[pos]);
 		}
 	}
 	private void setCountry6(int pos) {
