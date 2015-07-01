@@ -438,18 +438,28 @@ public class UseMedicineFragment extends Fragment implements  CommonConst{
 					for (HistoryBean historyBean : list) {
 						HashMap<String, Object> map = new HashMap<String, Object>();
 						map.put("ID", ID);
-						map.put(HistoryBean.ID, historyBean.getId()+"");
+						map.put("IDIndex", historyBean.getId()+"");
 						map.put(HistoryBean.TIME, historyBean.getTime());
 						map.put(HistoryBean.INR_LOW, historyBean.getLow());
 						map.put(HistoryBean.INR_UP, historyBean.getUp());
 						map.put(HistoryBean.NOW_INR, historyBean.getNow());
 						map.put(HistoryBean.LAST_HFL, historyBean.getLast());
-						map.put(HistoryBean.BLOOD, historyBean.getBlood());
+						if("是".equals(historyBean.getBlood())) {
+							map.put(HistoryBean.BLOOD, "1");
+						} else {
+							map.put(HistoryBean.BLOOD, "0");
+						}
+						
 						map.put(HistoryBean.RECORD, "1");
 						boolean result = false;
 						while (!result) {
 							soapObject = WebService.common(SOAP_HFL_HISTORY, METHOD_HFL_HISTORY, map, NAME_SPACE, END_POINT_SALE);
-							result = (Boolean) soapObject.getProperty(0);
+							String str = soapObject.getProperty(0).toString();
+							if("true".equals(str)) {
+								result = true;
+							} else {
+								result = false;
+							}
 						}
 					}
 				}
